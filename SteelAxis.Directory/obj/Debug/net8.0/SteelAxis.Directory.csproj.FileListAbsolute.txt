@@ -1,0 +1,13 @@
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/bin/Debug/net8.0/SteelAxis.Directory.deps.json
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/bin/Debug/net8.0/SteelAxis.Directory.dll
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/bin/Debug/net8.0/SteelAxis.Directory.pdb
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/SteelAxis.Directory.csproj.AssemblyReference.cache
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/SteelAxis.Directory.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/SteelAxis.Directory.AssemblyInfoInputs.cache
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/SteelAxis.Directory.AssemblyInfo.cs
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/SteelAxis.Directory.csproj.CoreCompileInputs.cache
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/SteelAxis.Directory.sourcelink.json
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/SteelAxis.Directory.dll
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/refint/SteelAxis.Directory.dll
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/SteelAxis.Directory.pdb
+/home/runner/work/SteelAxis/SteelAxis/SteelAxis.Directory/obj/Debug/net8.0/ref/SteelAxis.Directory.dll
