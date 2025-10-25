@@ -1,0 +1,24 @@
+@page "/"
+@using MudBlazor
+
+<PageTitle>Home - SteelAxis</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Welcome to SteelAxis</MudText>
+<MudText Class="mb-8">Steel fabrication management system</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="6" md="4">
+        <MudCard Elevation="2" Class="pa-4">
+            <MudCardContent>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Projects</MudText>
+                <MudText Typo="Typo.body2" Class="mt-2">Manage your steel fabrication projects</MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/projects">View Projects</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+}
