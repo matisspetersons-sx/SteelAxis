@@ -15,19 +15,19 @@ Blazor (MudBlazor) web application with a secured ASP.NET Core API, authenticate
 
 Identity (CIAM)
 - CIAM tenant: `<your-tenant>.onmicrosoft.com`
-- User flow: `B2C_1_susi` (Sign up and sign in)
+- User flow: `<YOUR_USER_FLOW>` (e.g., `B2C_1_susi` for Sign up and sign in)
 - Any email sign-up enabled via Local accounts (email verification)
 - App registrations in CIAM:
   - SPA client (SteelAxis.Web): `<YOUR_SPA_CLIENT_ID>`
   - API resource (SteelAxis.Api): `<YOUR_API_CLIENT_ID>`
   - Scope exposed: `api://<YOUR_API_CLIENT_ID>/access_as_user`
-- Authority (for apps): `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/B2C_1_susi`
+- Authority (for apps): `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>`
 
 Azure resources
 - App Service (Web): `<your-app-service-web>`
 - App Service (API): `<your-app-service-api>`
 - Key Vault: `<your-key-vault>` (stores CIAM config)
-  - AzureAdB2C--Authority = `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/B2C_1_susi`
+  - AzureAdB2C--Authority = `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>`
   - AzureAdB2C--ClientId = `<YOUR_SPA_CLIENT_ID>`
   - AzureAdB2C--ApiClientId = `<YOUR_API_CLIENT_ID>`
   - AzureAdB2C--DefaultScopes = `api://<YOUR_API_CLIENT_ID>/access_as_user`
@@ -36,7 +36,7 @@ CI/CD (GitHub Actions with Azure OIDC)
 - Branch: dev
 - OIDC federated credential subject: `repo:<your-github-org>/<your-repo>:ref:refs/heads/dev`
 - Repo secrets required:
-  - AZURE_CLIENT_ID = `<YOUR_AZURE_CLIENT_ID>` (the managed identity/service principal client ID)
+  - AZURE_CLIENT_ID = `<YOUR_MANAGED_IDENTITY_CLIENT_ID>` (the managed identity/service principal client ID for OIDC)
   - AZURE_TENANT_ID = `<YOUR_TENANT_ID>`
   - AZURE_SUBSCRIPTION_ID = `<YOUR_SUBSCRIPTION_ID>`
 - Workflows added:
@@ -72,7 +72,7 @@ Copilot for pull requests
 
 Environment variables (API)
 ```
-AzureAdB2C__Authority=https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/B2C_1_susi
+AzureAdB2C__Authority=https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>
 AzureAdB2C__ApiClientId=<YOUR_API_CLIENT_ID>
 ```
 
@@ -99,8 +99,8 @@ Requirements
 
 ## Authentication details
 
-Tokens issued by CIAM user flow B2C_1_susi:
-- Authority: `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/B2C_1_susi` (use /v2.0 OIDC metadata)
+Tokens issued by CIAM user flow (e.g., `B2C_1_susi`):
+- Authority: `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>` (use /v2.0 OIDC metadata)
 - Audience (API): `<YOUR_API_CLIENT_ID>`
 - Scope: `api://<YOUR_API_CLIENT_ID>/access_as_user`
 - knownAuthorities for clients: `["<your-tenant>.ciamlogin.com"]`
