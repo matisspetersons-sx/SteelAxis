@@ -1,0 +1,86 @@
+name: Deploy API (dev, OIDC)
+
+on:
+  push:
+    branches: [ "dev" ]
+    paths:
+      - "**/*.cs"
+      - "**/*.csproj"
+      - "**/*.sln"
+      - ".github/workflows/deploy-api-dev.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-api-dev
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Locate API project (SteelAxis.Api*)
+        id: find
+        shell: bash
+        run: |
+          set -euo pipefail
+          API_CSPROJ=$(git ls-files \
+            "*SteelAxis.Api*.csproj" \
+            "api/*.csproj" \
+            "src/**/SteelAxis.Api*.csproj" \
+            | head -n1)
+          if [[ -z "${API_CSPROJ}" ]]; then
+            echo "::error::Could not find API project (SteelAxis.Api). Ensure a *SteelAxis.Api*.csproj exists.";
+            exit 1
+          fi
+          API_DIR=$(dirname "$API_CSPROJ")
+          echo "api_csproj=$API_CSPROJ" >> "$GITHUB_OUTPUT"
+          echo "api_dir=$API_DIR" >> "$GITHUB_OUTPUT"
+          echo "Found API project at: $API_CSPROJ"
+
+      - name: Restore
+        run: |
+          dotnet restore "${{ steps.find.outputs.api_csproj }}"
+
+      - name: Build (warnings as errors)
+        run: |
+          dotnet build "${{ steps.find.outputs.api_csproj }}" -c Release --no-restore -warnaserror
+
+      - name: Test (if any test projects exist)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-files "*Tests*.csproj" | grep -q ".csproj"; then
+            dotnet test -c Release --no-build --verbosity normal
+          else
+            echo "No test projects found; skipping dotnet test"
+          fi
+
+      - name: Publish API
+        run: |
+          dotnet publish "${{ steps.find.outputs.api_csproj }}" -c Release -o ./out/api --no-build
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to steelaxis-dev-api
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: steelaxis-dev-api
+          package: ./out/api
