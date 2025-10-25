@@ -2,37 +2,46 @@
 
 Blazor (MudBlazor) web application with a secured ASP.NET Core API, authenticated by Microsoft Entra External ID for customers (CIAM). The project includes Azure-hosted infrastructure and GitHub Actions CI/CD with OpenID Connect (no publish profiles).
 
+## ⚠️ Security Notice
+
+**DO NOT store secrets, passwords, or sensitive credentials in this repository.**
+
+- Use Azure Key Vault or GitHub Secrets for all sensitive configuration values
+- Never commit actual tenant IDs, subscription IDs, client IDs, or client secrets
+- This README uses placeholders like `<YOUR_TENANT_ID>` - replace them with your actual values only in secure configuration stores
+- Review all commits to ensure no sensitive data is accidentally included
+
 ## What’s been accomplished
 
 Identity (CIAM)
-- CIAM tenant: steelaxistenants.onmicrosoft.com
-- User flow: B2C_1_susi (Sign up and sign in)
+- CIAM tenant: `<your-tenant>.onmicrosoft.com`
+- User flow: `<YOUR_USER_FLOW>` (e.g., `B2C_1_susi` for Sign up and sign in)
 - Any email sign-up enabled via Local accounts (email verification)
 - App registrations in CIAM:
-  - SPA client (SteelAxis.Web): c18d34dc-20da-408c-bfaa-d61760a88957
-  - API resource (SteelAxis.Api): 3b6c5177-6c96-46ce-a15a-818f1738dc7d
-  - Scope exposed: api://3b6c5177-6c96-46ce-a15a-818f1738dc7d/access_as_user
-- Authority (for apps): https://steelaxistenants.ciamlogin.com/steelaxistenants.onmicrosoft.com/B2C_1_susi
+  - SPA client (SteelAxis.Web): `<YOUR_SPA_CLIENT_ID>`
+  - API resource (SteelAxis.Api): `<YOUR_API_CLIENT_ID>`
+  - Scope exposed: `api://<YOUR_API_CLIENT_ID>/access_as_user`
+- Authority (for apps): `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>`
 
 Azure resources
-- App Service (Web): steelaxis-dev
-- App Service (API): steelaxis-dev-api
-- Key Vault: kv-Steelaxis-dev (stores CIAM config)
-  - AzureAdB2C--Authority = https://steelaxistenants.ciamlogin.com/steelaxistenants.onmicrosoft.com/B2C_1_susi
-  - AzureAdB2C--ClientId = c18d34dc-20da-408c-bfaa-d61760a88957
-  - AzureAdB2C--ApiClientId = 3b6c5177-6c96-46ce-a15a-818f1738dc7d
-  - AzureAdB2C--DefaultScopes = api://3b6c5177-6c96-46ce-a15a-818f1738dc7d/access_as_user
+- App Service (Web): `<your-app-service-web>`
+- App Service (API): `<your-app-service-api>`
+- Key Vault: `<your-key-vault>` (stores CIAM config)
+  - AzureAdB2C--Authority = `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>`
+  - AzureAdB2C--ClientId = `<YOUR_SPA_CLIENT_ID>`
+  - AzureAdB2C--ApiClientId = `<YOUR_API_CLIENT_ID>`
+  - AzureAdB2C--DefaultScopes = `api://<YOUR_API_CLIENT_ID>/access_as_user`
 
 CI/CD (GitHub Actions with Azure OIDC)
 - Branch: dev
-- OIDC federated credential subject: repo:matisspetersons-sx/SteelAxis:ref:refs/heads/dev
+- OIDC federated credential subject: `repo:<your-github-org>/<your-repo>:ref:refs/heads/dev`
 - Repo secrets required:
-  - AZURE_CLIENT_ID
-  - AZURE_TENANT_ID = c0353f5d-dcc8-4dc6-9d6c-a89377d04251
-  - AZURE_SUBSCRIPTION_ID = 31a2fcb1-5cca-4c0e-9782-57054e8232f9
+  - AZURE_CLIENT_ID = `<YOUR_MANAGED_IDENTITY_CLIENT_ID>` (the managed identity/service principal client ID for OIDC)
+  - AZURE_TENANT_ID = `<YOUR_TENANT_ID>`
+  - AZURE_SUBSCRIPTION_ID = `<YOUR_SUBSCRIPTION_ID>`
 - Workflows added:
-  - .github/workflows/deploy-api-dev.yml — builds and deploys SteelAxis.Api* to steelaxis-dev-api
-  - .github/workflows/deploy-web-dev.yml — builds and deploys SteelAxis.Web* to steelaxis-dev
+  - .github/workflows/deploy-api-dev.yml — builds and deploys SteelAxis.Api* to `<your-app-service-api>`
+  - .github/workflows/deploy-web-dev.yml — builds and deploys SteelAxis.Web* to `<your-app-service-web>`
   - .github/workflows/ci-dev.yml — dotnet format, build (warnings as errors), tests, Trivy FS scan with SARIF upload
   - .github/workflows/codeql-csharp-dev.yml — CodeQL for C#
   - .github/dependabot.yml — weekly NuGet (root) and npm (/web) updates
@@ -63,8 +72,8 @@ Copilot for pull requests
 
 Environment variables (API)
 ```
-AzureAdB2C__Authority=https://steelaxistenants.ciamlogin.com/steelaxistenants.onmicrosoft.com/B2C_1_susi
-AzureAdB2C__ApiClientId=3b6c5177-6c96-46ce-a15a-818f1738dc7d
+AzureAdB2C__Authority=https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>
+AzureAdB2C__ApiClientId=<YOUR_API_CLIENT_ID>
 ```
 
 Build and run
@@ -76,13 +85,13 @@ dotnet run --project src/SteelAxis.Web/SteelAxis.Web.csproj
 ```
 
 Blazor + MudBlazor
-- The web project is Blazor (MudBlazor UI). Publish output is deployed to steelaxis-dev.
+- The web project is Blazor (MudBlazor UI). Publish output is deployed to `<your-app-service-web>`.
 
 ## Deployment
 
 On push to dev:
-- API workflow builds/publishes SteelAxis.Api* and deploys to steelaxis-dev-api
-- Web workflow builds/publishes SteelAxis.Web* and deploys to steelaxis-dev
+- API workflow builds/publishes SteelAxis.Api* and deploys to `<your-app-service-api>`
+- Web workflow builds/publishes SteelAxis.Web* and deploys to `<your-app-service-web>`
 
 Requirements
 - Repo secrets set (AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID)
@@ -90,11 +99,11 @@ Requirements
 
 ## Authentication details
 
-Tokens issued by CIAM user flow B2C_1_susi:
-- Authority: https://steelaxistenants.ciamlogin.com/steelaxistenants.onmicrosoft.com/B2C_1_susi (use /v2.0 OIDC metadata)
-- Audience (API): 3b6c5177-6c96-46ce-a15a-818f1738dc7d
-- Scope: api://3b6c5177-6c96-46ce-a15a-818f1738dc7d/access_as_user
-- knownAuthorities for clients: ["steelaxistenants.ciamlogin.com"]
+Tokens issued by CIAM user flow (e.g., `B2C_1_susi`):
+- Authority: `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>` (use /v2.0 OIDC metadata)
+- Audience (API): `<YOUR_API_CLIENT_ID>`
+- Scope: `api://<YOUR_API_CLIENT_ID>/access_as_user`
+- knownAuthorities for clients: `["<your-tenant>.ciamlogin.com"]`
 
 ## Changelog
 
