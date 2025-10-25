@@ -1,6 +1,6 @@
 # SteelAxis
 
-Blazor (MudBlazor) web application with a secured ASP.NET Core API, authenticated by Microsoft Entra External ID for customers (CIAM). The project includes Azure-hosted infrastructure and GitHub Actions CI/CD with OpenID Connect (no publish profiles).
+Multi-tenant steel fabrication management system built with Blazor (MudBlazor) web application and a secured ASP.NET Core API, authenticated by Microsoft Entra External ID for customers (CIAM). The project includes Azure-hosted infrastructure and GitHub Actions CI/CD with OpenID Connect.
 
 ## ⚠️ Security Notice
 
@@ -11,7 +11,60 @@ Blazor (MudBlazor) web application with a secured ASP.NET Core API, authenticate
 - This README uses placeholders like `<YOUR_TENANT_ID>` - replace them with your actual values only in secure configuration stores
 - Review all commits to ensure no sensitive data is accidentally included
 
-## What’s been accomplished
+## Solution Structure
+
+The solution has been scaffolded with 8 projects following the Manimp architecture pattern:
+
+```
+SteelAxis/
+├── SteelAxis.Shared/          # Common models and interfaces
+├── SteelAxis.Auth/            # Authentication models
+├── SteelAxis.Directory/       # Central directory service
+├── SteelAxis.Data/            # Tenant database contexts
+├── SteelAxis.Services/        # Business logic services
+├── SteelAxis.Api/             # Web API endpoints
+├── SteelAxis.Web/             # Blazor Server web application
+└── SteelAxis.Tests/           # Unit and integration tests
+```
+
+## Technology Stack
+
+- .NET 8.0
+- ASP.NET Core
+- Blazor Server
+- MudBlazor 8.12.0
+- Entity Framework Core 8.0
+- SQL Server
+- xUnit
+- Microsoft Identity Web
+- Azure Key Vault
+
+## Quick Start
+
+### Build the solution
+```bash
+dotnet restore
+dotnet build
+```
+
+### Run the Web application
+```bash
+cd SteelAxis.Web
+dotnet run
+```
+
+### Run the API
+```bash
+cd SteelAxis.Api
+dotnet run
+```
+
+### Run tests
+```bash
+dotnet test
+```
+
+## What's been accomplished
 
 Identity (CIAM)
 - CIAM tenant: `<your-tenant>.onmicrosoft.com`
