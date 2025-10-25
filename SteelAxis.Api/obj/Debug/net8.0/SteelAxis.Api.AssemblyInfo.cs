@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SteelAxis.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b5372291c9254214d9f804c2e52aeab6913a2e48")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+988713ebcee38b461885002d87885b3ec9d7aca0")]
 [assembly: System.Reflection.AssemblyProductAttribute("SteelAxis.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SteelAxis.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
