@@ -1,0 +1,41 @@
+@page "/login"
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.OpenIdConnect
+@inject NavigationManager Navigation
+
+<PageTitle>Login</PageTitle>
+
+<div class="login-container">
+    <h1>Welcome to SteelAxis</h1>
+    <p>Please sign in to continue.</p>
+    <button class="btn btn-primary" @onclick="SignIn">Sign In</button>
+</div>
+
+@code {
+    private void SignIn()
+    {
+        Navigation.NavigateTo($"MicrosoftIdentity/Account/SignIn?redirectUri={Uri.EscapeDataString("/")}", forceLoad: true);
+    }
+}
+
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 40px;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .login-container h1 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .login-container p {
+        margin-bottom: 30px;
+        color: #666;
+    }
+</style>

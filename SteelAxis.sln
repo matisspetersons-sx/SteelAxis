@@ -1,0 +1,61 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAxis.Shared", "SteelAxis.Shared\SteelAxis.Shared.csproj", "{F1A1B1C1-D1E1-4F1A-8A1B-1C1D1E1F1A1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAxis.Auth", "SteelAxis.Auth\SteelAxis.Auth.csproj", "{F2A2B2C2-D2E2-4F2A-8A2B-2C2D2E2F2A2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAxis.Directory", "SteelAxis.Directory\SteelAxis.Directory.csproj", "{F3A3B3C3-D3E3-4F3A-8A3B-3C3D3E3F3A3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAxis.Data", "SteelAxis.Data\SteelAxis.Data.csproj", "{F4A4B4C4-D4E4-4F4A-8A4B-4C4D4E4F4A4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAxis.Services", "SteelAxis.Services\SteelAxis.Services.csproj", "{F5A5B5C5-D5E5-4F5A-8A5B-5C5D5E5F5A5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAxis.Api", "SteelAxis.Api\SteelAxis.Api.csproj", "{F6A6B6C6-D6E6-4F6A-8A6B-6C6D6E6F6A6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAxis.Web", "SteelAxis.Web\SteelAxis.Web.csproj", "{F7A7B7C7-D7E7-4F7A-8A7B-7C7D7E7F7A7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAxis.Tests", "SteelAxis.Tests\SteelAxis.Tests.csproj", "{F8A8B8C8-D8E8-4F8A-8A8B-8C8D8E8F8A8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1A1B1C1-D1E1-4F1A-8A1B-1C1D1E1F1A1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1A1B1C1-D1E1-4F1A-8A1B-1C1D1E1F1A1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1A1B1C1-D1E1-4F1A-8A1B-1C1D1E1F1A1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1A1B1C1-D1E1-4F1A-8A1B-1C1D1E1F1A1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2A2B2C2-D2E2-4F2A-8A2B-2C2D2E2F2A2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2A2B2C2-D2E2-4F2A-8A2B-2C2D2E2F2A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2A2B2C2-D2E2-4F2A-8A2B-2C2D2E2F2A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2A2B2C2-D2E2-4F2A-8A2B-2C2D2E2F2A2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3A3B3C3-D3E3-4F3A-8A3B-3C3D3E3F3A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3A3B3C3-D3E3-4F3A-8A3B-3C3D3E3F3A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3A3B3C3-D3E3-4F3A-8A3B-3C3D3E3F3A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3A3B3C3-D3E3-4F3A-8A3B-3C3D3E3F3A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4A4B4C4-D4E4-4F4A-8A4B-4C4D4E4F4A4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4A4B4C4-D4E4-4F4A-8A4B-4C4D4E4F4A4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4A4B4C4-D4E4-4F4A-8A4B-4C4D4E4F4A4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4A4B4C4-D4E4-4F4A-8A4B-4C4D4E4F4A4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5A5B5C5-D5E5-4F5A-8A5B-5C5D5E5F5A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5A5B5C5-D5E5-4F5A-8A5B-5C5D5E5F5A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5A5B5C5-D5E5-4F5A-8A5B-5C5D5E5F5A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5A5B5C5-D5E5-4F5A-8A5B-5C5D5E5F5A5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6A6B6C6-D6E6-4F6A-8A6B-6C6D6E6F6A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6A6B6C6-D6E6-4F6A-8A6B-6C6D6E6F6A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6A6B6C6-D6E6-4F6A-8A6B-6C6D6E6F6A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6A6B6C6-D6E6-4F6A-8A6B-6C6D6E6F6A6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7A7B7C7-D7E7-4F7A-8A7B-7C7D7E7F7A7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7A7B7C7-D7E7-4F7A-8A7B-7C7D7E7F7A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7A7B7C7-D7E7-4F7A-8A7B-7C7D7E7F7A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7A7B7C7-D7E7-4F7A-8A7B-7C7D7E7F7A7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8A8B8C8-D8E8-4F8A-8A8B-8C8D8E8F8A8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8A8B8C8-D8E8-4F8A-8A8B-8C8D8E8F8A8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8A8B8C8-D8E8-4F8A-8A8B-8C8D8E8F8A8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8A8B8C8-D8E8-4F8A-8A8B-8C8D8E8F8A8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
