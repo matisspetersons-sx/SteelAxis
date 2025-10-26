@@ -25,7 +25,7 @@ public class SecureDataController : ControllerBase
     {
         var userName = User.Identity?.Name ?? "Unknown";
         var userId = User.FindFirst("oid")?.Value ?? "Unknown";
-        
+
         _logger.LogInformation("User {UserName} (ID: {UserId}) accessed secure data", userName, userId);
 
         return Ok(new
