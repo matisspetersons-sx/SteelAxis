@@ -54,8 +54,17 @@ dotnet build
 
 ### Run tests
 ```bash
+# Run all tests (recommended - runs tests from each test project)
 dotnet test
+
+# Or run tests for a specific test project
+dotnet test SteelAxis.Tests/SteelAxis.Tests.csproj
+
+# Run with specific configuration
+dotnet test -c Release --verbosity normal
 ```
+
+**Note:** When running tests in CI/CD or when troubleshooting, it's recommended to run tests on individual test project files rather than at the solution level. This avoids potential issues with VSTest argument handling and makes test execution more explicit.
 
 ### Run the Web application
 ```bash

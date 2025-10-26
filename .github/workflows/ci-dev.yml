@@ -28,7 +28,10 @@ jobs:
       - name: Test
         run: |
           if git ls-files "*Tests*.csproj" | grep -q ".csproj"; then
-            dotnet test -c Release --no-build --verbosity normal
+            for test_project in $(git ls-files "*Tests*.csproj"); do
+              echo "Running tests for: $test_project"
+              dotnet test "$test_project" -c Release --no-build --verbosity normal
+            done
           else
             echo "No test projects found; skipping dotnet test"
           fi
