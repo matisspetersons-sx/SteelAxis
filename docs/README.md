@@ -1,363 +1,247 @@
 # SteelAxis Documentation
 
-**Last Updated:** October 27, 2025  
-**Version:** 1.0.0  
-**Project:** SteelAxis - Multi-tenant Steel Fabrication Management System
-
-Welcome to the SteelAxis documentation! All documentation is organized by feature area for easy navigation.
-
-**Note:** This documentation was originally from the Manimp repository and serves as a reference for implementing features in SteelAxis with .NET 8.0, Blazor Server, MudBlazor, and Microsoft Entra External ID.
+**Project:** SteelAxis - Multi-tenant Steel Fabrication Management System  
+**Status:** 🚧 **INITIAL DEVELOPMENT PHASE**  
+**Last Updated:** October 27, 2025
 
 ---
 
-## � Feature Documentation Template
+## 🎯 Project Overview
 
-**NEW:** For all new features, use the standardized documentation structure:
-- See **[DOCUMENTATION-TEMPLATE.md](./DOCUMENTATION-TEMPLATE.md)** for complete templates
-- Each feature requires a folder in `/docs/[feature-name]/` with:
-  - `PLAN.md` (created before implementation)
-  - `README.md` (what, why, how)
-  - `API-SPEC.md` (API endpoints and contracts)
-  - `DATABASE.md` (schema and migrations)
-  - `UI.md` (UI components and pages)
+SteelAxis is a multi-tenant steel fabrication management system with focus on **EN 1090 compliance** for European steel construction standards.
 
-See the `.github/copilot-instructions.md` for complete development workflow requirements.
+### Technology Stack
+- **.NET 8.0** - Latest LTS framework
+- **Blazor Server** - Interactive web application
+- **MudBlazor 8.12.0** - Material Design component library
+- **ASP.NET Core Web API** - RESTful backend services
+- **Microsoft Entra External ID** - Customer authentication (CIAM)
+- **Azure Cloud** - App Services, SQL Database, Key Vault
+- **Entity Framework Core 8.0** - Database ORM
+
+### Architecture
+- **Multi-tenancy:** Database per tenant pattern
+- **Authentication:** Microsoft Entra External ID (CIAM)
+- **Deployment:** Azure App Services with GitHub Actions CI/CD
+- **API-First:** Every feature includes full API implementation
 
 ---
 
-## 📁 Documentation Structure
+## 🚧 Current Status
 
-### 🔐 [Authentication](./authentication/)
-**Status for SteelAxis:** ✅ Already implemented with Microsoft Entra External ID (CIAM)
+**CLEAN SLATE - NO FEATURES IMPLEMENTED**
 
-Azure AD B2C / Entra External ID authentication and authorization implementation.
+### ✅ Completed Setup
+- Solution structure created (8 projects: Shared, Auth, Directory, Data, Services, API, Web, Tests)
+- Authentication configured with Microsoft Entra External ID
+- Azure infrastructure provisioned (steelaxis-dev, steelaxis-dev-api)
+- CI/CD pipelines configured (GitHub Actions)
+- Development guidelines established
+- Documentation templates created
 
-- **[azure-b2c-authentication.md](./authentication/azure-b2c-authentication.md)** - Complete B2C/CIAM setup reference (800+ lines)
+### ❌ Not Yet Implemented
+- **No database models** (beyond base entities)
+- **No business logic services**
+- **No API controllers** (beyond health check)
+- **No UI components** (beyond authentication)
+- **No EN 1090 features**
+- **No material management**
+- **No project tracking**
+- **No quality control workflows**
 
-**Key Features:**
-- Customer Identity and Access Management (CIAM)
+**SteelAxis is ready for feature development to begin.**
+
+---
+
+## 📚 Available Documentation
+
+### 🔐 Authentication
+**Status:** ✅ Configured and ready
+
+Microsoft Entra External ID (CIAM) authentication setup guides.
+
+- **[authentication/README.md](./authentication/README.md)** - Authentication overview and configuration
+
+**Key Points:**
 - FREE for first 50,000 monthly active users
-- OpenID Connect integration with ASP.NET Core
-- Custom claims transformation and role management
+- OpenID Connect integration
+- Multi-tenant user isolation
+- Role-based access control ready
 
 ---
 
-### � [Azure Infrastructure](./azure-infrastructure/)
-**Status for SteelAxis:** ✅ Already configured (steelaxis-dev, steelaxis-dev-api)
+### ☁️ Azure Infrastructure
+**Status:** ✅ Provisioned (Dev environment)
 
-Complete Azure cloud infrastructure setup and deployment guides.
+Azure cloud infrastructure setup and deployment guides.
 
-- **[azure-infrastructure-setup.md](./azure-infrastructure/azure-infrastructure-setup.md)** - Complete Azure resource provisioning
-- **[azure-dns-setup-guide.md](./azure-infrastructure/azure-dns-setup-guide.md)** - DNS configuration with visual diagrams
-- **[azure-deployment.md](./azure-infrastructure/azure-deployment.md)** - Azure App Service deployment guide
-- **[cicd-summary.md](./azure-infrastructure/cicd-summary.md)** - CI/CD pipeline configuration for GitHub Actions
+- **[azure-infrastructure/README.md](./azure-infrastructure/README.md)** - Infrastructure documentation index
+- **[azure-infrastructure/azure-infrastructure-setup.md](./azure-infrastructure/azure-infrastructure-setup.md)** - Complete Azure resource provisioning
+- **[azure-infrastructure/azure-dns-setup-guide.md](./azure-infrastructure/azure-dns-setup-guide.md)** - DNS configuration guide
+- **[azure-infrastructure/azure-deployment.md](./azure-infrastructure/azure-deployment.md)** - App Service deployment
+- **[azure-infrastructure/cicd-summary.md](./azure-infrastructure/cicd-summary.md)** - GitHub Actions CI/CD
+
+**Resources Provisioned:**
+- App Service: `steelaxis-dev` (Blazor Web)
+- App Service: `steelaxis-dev-api` (Web API)
+- SQL Server: Configured with elastic pool
+- Key Vault: `kv-Steelaxis-dev`
+- Azure DNS: Ready for custom domain
 
 ---
 
-### ⚙️ [EN 1090 Compliance](./en-1090-compliance/)
-**Status for SteelAxis:** ⏸️ **Priority for implementation** - Core business logic for steel fabrication
+### ⚙️ EN 1090 Compliance
+**Status:** 📋 **SPECIFICATION READY - AWAITING IMPLEMENTATION**
 
-European standard for fabrication of steel structures - quality management and traceability.
+European standard (EN 1090) requirements and implementation specifications for steel fabrication quality management.
 
-**⭐ Start Here:**
-- **[EN-1090-COMPLETE-GUIDE.md](./en-1090-compliance/EN-1090-COMPLETE-GUIDE.md)** - Condensed implementation guide (800+ lines)
-- **[README.md](./en-1090-compliance/README.md)** - Quick overview and document index
+- **[en-1090-compliance/README.md](./en-1090-compliance/README.md)** - Documentation index
+- **[en-1090-compliance/EN-1090-COMPLETE-GUIDE.md](./en-1090-compliance/EN-1090-COMPLETE-GUIDE.md)** - ⭐ **START HERE** - Complete implementation guide
+- **[en-1090-compliance/en-1090-requirements.md](./en-1090-compliance/en-1090-requirements.md)** - Database schemas and API specifications
+- **[en-1090-compliance/en-1090-development.md](./en-1090-compliance/en-1090-development.md)** - Development guide with code examples
+- **[en-1090-compliance/en-1090-quick-reference.md](./en-1090-compliance/en-1090-quick-reference.md)** - Quick reference
+- **[en-1090-compliance/en-1090-ncr-management.md](./en-1090-compliance/en-1090-ncr-management.md)** - Non-Conformance Report system
+- **[en-1090-compliance/en-1090-data-hashing-plan.md](./en-1090-compliance/en-1090-data-hashing-plan.md)** - Data integrity strategy
 
-**Detailed Documentation:**
-- **[en-1090-requirements.md](./en-1090-compliance/en-1090-requirements.md)** - Full standard requirements, database schemas, APIs
-- **[en-1090-compliance.md](./en-1090-compliance/en-1090-compliance.md)** - Implementation roadmap
-- **[en-1090-development.md](./en-1090-compliance/en-1090-development.md)** - Development guide
-- **[en-1090-quick-reference.md](./en-1090-compliance/en-1090-quick-reference.md)** - Quick reference
-- **[en-1090-ncr-management.md](./en-1090-compliance/en-1090-ncr-management.md)** - Non-Conformance Report system
-- **[NCR-WORKFLOW-ENHANCEMENTS.md](./en-1090-compliance/NCR-WORKFLOW-ENHANCEMENTS.md)** - NCR workflow improvements
-- **[en-1090-data-hashing-plan.md](./en-1090-compliance/en-1090-data-hashing-plan.md)** - Data integrity with SHA-256
-- **[en-1090-immutability-summary.md](./en-1090-compliance/en-1090-immutability-summary.md)** - Immutable record system
-- **[en-1090-supplementary-requirements.md](./en-1090-compliance/en-1090-supplementary-requirements.md)** - Additional requirements
-
-**Key Concepts:**
-- Material traceability (EN 10204 certificates)
-- Document control and version management
-- Non-conformance tracking (NCR/CAR)
-- Welding procedure specifications (WPS/WPQR)
+**Core Requirements:**
+- Material traceability (EN 10204 Type 3.1/3.2 certificates)
+- Non-Conformance Reports (NCR) and Corrective Actions (CAR)
+- Welding Procedure Specifications (WPS/WPQR)
+- Declaration of Performance (DoP) and CE marking
 - Immutable audit trails with SHA-256 hashing
-- CE marking and Declaration of Performance (DoP)
+- Quality control documentation
+
+**⚠️ NOTE:** These are specifications and requirements. **No EN 1090 features are implemented yet.**
 
 ---
 
-### � [Customer Portal](./customer-portal/)
-**Status for SteelAxis:** ⏸️ To be implemented
+### 🎨 MudBlazor Components
+**Status:** 📚 Reference documentation
 
-Customer-facing portal for project visibility and document sharing.
+MudBlazor component usage guides and examples.
 
-**⭐ Start Here:**
-- **[START-HERE.md](./customer-portal/START-HERE.md)** - Quick overview
-- **[README.md](./customer-portal/README.md)** - Complete feature guide
-
-**Implementation Docs:**
-- **[IMPLEMENTATION-PLAN.md](./customer-portal/IMPLEMENTATION-PLAN.md)** - Detailed implementation plan
-- **[IMPLEMENTATION-COMPLETE.md](./customer-portal/IMPLEMENTATION-COMPLETE.md)** - Implementation summary
-- **[QUICK-REFERENCE.md](./customer-portal/QUICK-REFERENCE.md)** - Quick reference guide
-- **[MANAGEMENT-SUMMARY.md](./customer-portal/MANAGEMENT-SUMMARY.md)** - Management overview
-- **[00-DELIVERY-SUMMARY.md](./customer-portal/00-DELIVERY-SUMMARY.md)** - Delivery summary
-
-**Key Features:**
-- Secure customer access to project information
-- Document sharing and download
-- Progress tracking and updates
-- Communication portal
+- **[mudblazor/README.md](./mudblazor/README.md)** - Component library index
+- Component-specific guides: MudDataGrid, MudDialog, MudButton, MudTable, etc.
 
 ---
 
-### 📂 [File Storage](./file-storage/)
-**Status for SteelAxis:** ⏸️ To be implemented
+## 📝 Feature Documentation Template
 
-Multi-domain file storage architecture with Azure Blob Storage.
+**IMPORTANT:** All new features MUST follow the standardized documentation structure.
 
-**⭐ Main Reference:**
-- **[file-storage-multi-domain-architecture.md](./file-storage/file-storage-multi-domain-architecture.md)** - Complete implementation (3000+ lines)
+See **[DOCUMENTATION-TEMPLATE.md](./DOCUMENTATION-TEMPLATE.md)** for complete templates.
 
-**Quick References:**
-- **[file-storage-multi-domain-quick-ref.md](./file-storage/file-storage-multi-domain-quick-ref.md)** - Quick reference and commands (400 lines)
-- **[file-storage-quick-ref.md](./file-storage/file-storage-quick-ref.md)** - Legacy quick reference
+### Required Documentation Structure
 
-**Planning & Summaries:**
-- **[file-storage-implementation-summary.md](./file-storage/file-storage-implementation-summary.md)** - Executive summary
-- **[file-storage-subdomain-plan.md](./file-storage/file-storage-subdomain-plan.md)** - Original subdomain plan
-- **[file-storage-comparison.md](./file-storage/file-storage-comparison.md)** - Architecture comparisons
+Each feature requires a dedicated folder: `/docs/[feature-name]/`
 
-**Proposed Architecture:**
-- `{tenant}.steelaxis.com` - Main application
-- `{tenant}.files.steelaxis.com` - Internal file portal
-- `{tenant}.docs.steelaxis.com` - External client portal
+**Required Files:**
+1. **PLAN.md** - Created BEFORE implementation starts
+   - Feature description and business value
+   - User stories and acceptance criteria
+   - Technical approach and architecture
+   - API endpoints to be created
+   - Database schema changes
+   - UI components and pages
+   - Implementation steps
 
-**Features:**
-- Role-based file sharing
-- Time-limited share links
-- External user access
-- Project phase-based file visibility
-- Azure Blob Storage integration
+2. **README.md** - Updated AFTER implementation completes
+   - What: Feature description
+   - Why: Business value
+   - How: Usage instructions
+   - Screenshots/diagrams
+   - Configuration
+   - Known limitations
 
----
+3. **API-SPEC.md** - API endpoint documentation
+4. **DATABASE.md** - Database schema and migrations
+5. **UI.md** - UI components and page specifications
+6. **IMPLEMENTATION.md** - Implementation details and decisions
 
-### 📦 [Inventory](./inventory/)
-**Status for SteelAxis:** ⏸️ To be implemented
+### Workflow Requirements
 
-Material tracking, stock management, and remnants optimization.
+See `.github/copilot-instructions.md` for complete development workflow:
 
-- **[inventory-ui-implementation-summary.md](./inventory/inventory-ui-implementation-summary.md)** - UI implementation overview
-- **[inventory-lot-number-improvements.md](./inventory/inventory-lot-number-improvements.md)** - Lot number traceability
-- **[remnants-page-improvements.md](./inventory/remnants-page-improvements.md)** - Remnants management
-
-**Features:**
-- Sheet inventory tracking
-- Structural profile inventory
-- Lot number traceability (EN 1090 compliance)
-- Material consumption tracking
-- Remnants management and optimization
-- Stock level alerts
-- Integration with MRP
+1. **Plan First** - Create detailed plan, get user approval
+2. **Implement** - Follow API-first approach (Models → Service → API → HTTP Service → UI)
+3. **Document** - Update all documentation files
+4. **Commit** - Commit documentation separately after feature completion
 
 ---
 
-### � [Procurement](./procurement/)
-**Status for SteelAxis:** ⏸️ To be implemented
+## 🚀 Getting Started
 
-Purchase order and supplier management system.
+### For Developers
 
-- **[procurement-implementation-summary.md](./procurement/procurement-implementation-summary.md)** - Implementation overview
-- **[multi-line-procurement-implementation.md](./procurement/multi-line-procurement-implementation.md)** - Multi-line PO functionality
+1. **Review Solution Structure**
+   - See root `ReadMe.md` for project structure
+   - Review `.github/copilot-instructions.md` for development standards
 
-**Features:**
-- Request for Quotation (RFQ) management
-- Purchase Order (PO) creation and tracking
-- Supplier management
-- Quote comparison
-- Multi-line items per PO
-- Receiving and invoicing workflows
+2. **Understand Multi-Tenancy**
+   - Database per tenant pattern
+   - Central directory service for tenant management
+   - Tenant resolution from authenticated user claims
 
----
+3. **Review EN 1090 Requirements**
+   - Start with `EN-1090-COMPLETE-GUIDE.md`
+   - Understand material traceability requirements
+   - Review NCR workflow specifications
 
-### �📊 [Project Management](./project-management/)
-**Status for SteelAxis:** ⏸️ To be implemented
+4. **Follow API-First Development**
+   - Every feature requires API implementation
+   - Use standardized component patterns
+   - Document as you build
 
-Project planning, task dependencies, critical path analysis, and production monitoring.
+### For New Features
 
-- **[project-management-enhancement.md](./project-management/project-management-enhancement.md)** - Project management features
-- **[project-management-quick-ref.md](./project-management/project-management-quick-ref.md)** - Quick reference
-- **[real-time-production-monitoring.md](./project-management/real-time-production-monitoring.md)** - SignalR-based monitoring
-
-**Features:**
-- Project creation and phase management
-- Task dependencies (FS, SS, FF, SF)
-- Critical path method (CPM) analysis
-- Resource allocation (welders, equipment)
-- Real-time production monitoring
-- Gantt charts and timelines
-- Budget tracking
+1. Read `DOCUMENTATION-TEMPLATE.md`
+2. Create feature folder in `/docs/[feature-name]/`
+3. Create `PLAN.md` with detailed implementation plan
+4. Get plan approved before starting
+5. Follow API-first development pattern
+6. Update all documentation upon completion
+7. Commit documentation separately
 
 ---
 
-### 🔒 [Security](./security/)
-Security implementation and testing documentation.
+## 📖 External References
 
-- **[security.md](./security/security.md)** - Security architecture and best practices
-- **[security-demo.md](./security/security-demo.md)** - Security feature demonstrations
-- **[security-test.md](./security/security-test.md)** - Security testing procedures
-
-**Topics:**
-- Multi-tenant data isolation
-- Row-level security
-- Feature gating
-- Microsoft Entra External ID authentication
-- HTTPS enforcement
-- SQL injection prevention
-- XSS protection
+- **[Microsoft Entra External ID Documentation](https://learn.microsoft.com/en-us/entra/external-id/)**
+- **[MudBlazor Documentation](https://mudblazor.com/)**
+- **[EN 1090 Standard Overview](https://www.steelconstruction.info/EN_1090)**
+- **[Azure App Service Documentation](https://learn.microsoft.com/en-us/azure/app-service/)**
 
 ---
 
-### 🎨 [MudBlazor](./mudblazor/)
-MudBlazor component documentation, patterns, and best practices.
+## 🎯 Next Steps
 
-**Purpose:**
-- Quick reference for MudBlazor 8.12.0 components
-- Consistent UI patterns (StandardDialog, StandardDataGrid, StandardForm)
-- Common issues and solutions
-- Integration with Blazor Server
-- Theme customization
+SteelAxis is ready for feature development. Recommended implementation order:
 
-**See also:** `.github/copilot-ui-instructions.md` for complete UI standards
+1. **Core Infrastructure**
+   - Tenant management service
+   - User management and roles
+   - Base entity models
 
----
+2. **EN 1090 Foundation**
+   - Material certificate management
+   - Material traceability system
+   - Document management system
 
-### 🔧 [Fixes & Improvements](./fixes-and-improvements/)
-Bug fixes and platform improvements.
+3. **Quality Management**
+   - Non-Conformance Reports (NCR)
+   - Corrective Action Requests (CAR)
+   - Quality control workflows
 
-- **[mudblazor-dialog-fix.md](./fixes-and-improvements/mudblazor-dialog-fix.md)** - MudBlazor dialog rendering fix
-- **[net8-blazor-rendermode-fix.md](./fixes-and-improvements/net8-blazor-rendermode-fix.md)** - .NET 8 Blazor render mode fix
+4. **Project Management**
+   - Project creation and tracking
+   - Material assignment to projects
+   - Progress tracking
 
----
-
-### 📋 [General](./general/)
-Strategic planning, roadmaps, and general documentation.
-
-- **[manimp-strategic-guide.md](./general/manimp-strategic-guide.md)** - Strategic product vision reference
-- **[manimp-development-roadmap.md](./general/manimp-development-roadmap.md)** - Development roadmap reference
-- **[implementation-status.md](./general/implementation-status.md)** - Implementation status tracking
-- **[DEMO-MODE.md](./general/DEMO-MODE.md)** - Demo mode configuration
-- **[what-next.md](./general/what-next.md)** - Future feature planning
-- **[Full db.erd](./general/Full%20db.erd)** - Database entity-relationship diagram
+5. **Customer Portal**
+   - Secure document sharing
+   - Project visibility for customers
+   - Token-based access
 
 ---
 
-## 🎯 Quick Start Guides
-
-### For New Developers
-
-1. **Understand the Project:**
-   - Read the main project [README.md](../README.md)
-   - Review Copilot instructions in `.github/copilot-instructions.md`
-   - Check [EN-1090-COMPLETE-GUIDE.md](./en-1090-compliance/EN-1090-COMPLETE-GUIDE.md) for business domain
-
-2. **Setup Development Environment:**
-   - Follow setup instructions in main README
-   - Review authentication setup: [azure-b2c-authentication.md](./authentication/azure-b2c-authentication.md)
-   - Check Azure infrastructure: [azure-infrastructure-setup.md](./azure-infrastructure/azure-infrastructure-setup.md)
-
-3. **Start Development:**
-   - Create feature folder in `/docs/[feature-name]/`
-   - Use [DOCUMENTATION-TEMPLATE.md](./DOCUMENTATION-TEMPLATE.md) for planning
-   - Follow API-first and UI standardization patterns from Copilot instructions
-
-### Implementing EN 1090 Compliance
-
-1. Start: [EN-1090-COMPLETE-GUIDE.md](./en-1090-compliance/EN-1090-COMPLETE-GUIDE.md)
-2. Database schemas: [en-1090-requirements.md](./en-1090-compliance/en-1090-requirements.md)
-3. Development guide: [en-1090-development.md](./en-1090-compliance/en-1090-development.md)
-4. NCR system: [en-1090-ncr-management.md](./en-1090-compliance/en-1090-ncr-management.md)
-
-### Implementing File Storage
-
-1. Architecture overview: [file-storage-multi-domain-architecture.md](./file-storage/file-storage-multi-domain-architecture.md)
-2. Quick commands: [file-storage-multi-domain-quick-ref.md](./file-storage/file-storage-multi-domain-quick-ref.md)
-3. Implementation summary: [file-storage-implementation-summary.md](./file-storage/file-storage-implementation-summary.md)
-
-### Implementing Customer Portal
-
-1. Overview: [START-HERE.md](./customer-portal/START-HERE.md)
-2. Implementation plan: [IMPLEMENTATION-PLAN.md](./customer-portal/IMPLEMENTATION-PLAN.md)
-3. Quick reference: [QUICK-REFERENCE.md](./customer-portal/QUICK-REFERENCE.md)
-
----
-
-## 📊 Implementation Status for SteelAxis
-
-| Feature Area | Status | Priority | Notes |
-|-------------|--------|----------|-------|
-| Authentication | ✅ Complete | - | Microsoft Entra External ID |
-| Azure Infrastructure | ✅ Complete | - | App Services deployed |
-| EN 1090 Compliance | ⏸️ Pending | **High** | Core business logic |
-| Customer Portal | ⏸️ Pending | High | External user access |
-| File Storage | ⏸️ Pending | Medium | Multi-domain architecture |
-| Inventory | ⏸️ Pending | Medium | Material tracking |
-| Procurement | ⏸️ Pending | Medium | RFQ/PO system |
-| Project Management | ⏸️ Pending | Medium | Task dependencies & CPM |
-| Real-time Monitoring | ⏸️ Pending | Low | SignalR dashboards |
-
----
-
-## � Documentation Standards
-
-### For All New Features:
-
-1. **Create feature folder:** `/docs/[feature-name]/`
-2. **Before implementation:**
-   - Create `PLAN.md` using template
-   - Get user approval
-3. **After implementation:**
-   - Complete `README.md` (what, why, how)
-   - Document APIs in `API-SPEC.md`
-   - Document schema in `DATABASE.md`
-   - Document UI in `UI.md`
-   - Update this main README
-
-See [DOCUMENTATION-TEMPLATE.md](./DOCUMENTATION-TEMPLATE.md) for complete templates.
-
----
-
-## 🔍 Search Tips
-
-**By Feature Area:**
-```bash
-ls -la docs/en-1090-compliance/
-ls -la docs/customer-portal/
-ls -la docs/file-storage/
-```
-
-**By Content:**
-```bash
-grep -r "MaterialCertificate" docs/
-grep -r "NCR" docs/en-1090-compliance/
-grep -r "Azure Blob" docs/file-storage/
-grep -r "SignalR" docs/project-management/
-```
-
----
-
-## 🤝 Contributing to Documentation
-
-When adding new documentation:
-
-1. **Choose the correct folder** based on feature area
-2. **Use the DOCUMENTATION-TEMPLATE.md** for new features
-3. **Follow naming conventions:**
-   - `PLAN.md` - Implementation plan (required before coding)
-   - `README.md` - Main feature documentation
-   - `API-SPEC.md` - API endpoints and contracts
-   - `DATABASE.md` - Database schema
-   - `UI.md` - UI components
-4. **Update this README** to include your new feature
-
----
-
-**Happy coding!** 🚀
-
+**Remember:** SteelAxis is a clean slate. All features must be built from scratch following the established patterns and documentation standards.

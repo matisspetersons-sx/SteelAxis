@@ -1,6 +1,6 @@
-# Azure Deployment Guide for Manimp
+# Azure Deployment Guide for SteelAxis
 
-This document provides comprehensive deployment instructions for the Manimp application on Azure, including cost optimization recommendations.
+This document provides comprehensive deployment instructions for the SteelAxis application on Azure, including cost optimization recommendations.
 
 ## Table of Contents
 
@@ -77,39 +77,39 @@ AZURE_SQL_TENANT_TEMPLATE_STAGING     # Staging tenant template
 az login
 
 # Create resource group
-az group create --name manimp-rg --location "East US"
+az group create --name steelaxis-rg --location "East US"
 
 # Create App Service Plan
-az appservice plan create --name manimp-plan --resource-group manimp-rg --sku S1 --is-linux
+az appservice plan create --name steelaxis-plan --resource-group steelaxis-rg --sku S1 --is-linux
 
 # Create Web App
-az webapp create --resource-group manimp-rg --plan manimp-plan --name manimp-app --runtime "DOTNETCORE:8.0"
+az webapp create --resource-group steelaxis-rg --plan steelaxis-plan --name steelaxis-app --runtime "DOTNETCORE:8.0"
 
 # Create staging slot
-az webapp deployment slot create --resource-group manimp-rg --name manimp-app --slot staging
+az webapp deployment slot create --resource-group steelaxis-rg --name steelaxis-app --slot staging
 ```
 
 #### 2. Configure Azure SQL Database
 
 ```bash
 # Create SQL Server
-az sql server create --name manimp-sql-server --resource-group manimp-rg --location "East US" --admin-user sqladmin --admin-password "YourStrongPassword123!"
+az sql server create --name steelaxis-sql-server --resource-group steelaxis-rg --location "East US" --admin-user sqladmin --admin-password "YourStrongPassword123!"
 
 # Create Directory database
-az sql db create --resource-group manimp-rg --server manimp-sql-server --name ManimpDirectory --service-objective S0
+az sql db create --resource-group steelaxis-rg --server steelaxis-sql-server --name SteelAxisDirectory --service-objective S0
 
 # Configure firewall rules
-az sql server firewall-rule create --resource-group manimp-rg --server manimp-sql-server --name AllowAzureServices --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+az sql server firewall-rule create --resource-group steelaxis-rg --server steelaxis-sql-server --name AllowAzureServices --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 ```
 
 #### 3. Configure Application Settings
 
 ```bash
 # Set connection strings
-az webapp config connection-string set --resource-group manimp-rg --name manimp-app --connection-string-type SQLAzure --settings Directory="Server=tcp:manimp-sql-server.database.windows.net,1433;Initial Catalog=ManimpDirectory;Persist Security Info=False;User ID=sqladmin;Password=YourStrongPassword123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+az webapp config connection-string set --resource-group steelaxis-rg --name steelaxis-app --connection-string-type SQLAzure --settings Directory="Server=tcp:steelaxis-sql-server.database.windows.net,1433;Initial Catalog=SteelAxisDirectory;Persist Security Info=False;User ID=sqladmin;Password=YourStrongPassword123!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
 # Set app settings
-az webapp config appsettings set --resource-group manimp-rg --name manimp-app --settings ASPNETCORE_ENVIRONMENT=Production
+az webapp config appsettings set --resource-group steelaxis-rg --name steelaxis-app --settings ASPNETCORE_ENVIRONMENT=Production
 ```
 
 #### 4. Deploy Application
@@ -118,10 +118,10 @@ The GitHub Actions workflow will automatically deploy when you push to the main 
 
 ```bash
 # Build and publish locally
-dotnet publish Manimp.Web/Manimp.Web.csproj -c Release -o ./publish
+dotnet publish SteelAxis.Web/SteelAxis.Web.csproj -c Release -o ./publish
 
 # Deploy using Azure CLI
-az webapp deploy --resource-group manimp-rg --name manimp-app --src-path ./publish.zip --type zip
+az webapp deploy --resource-group steelaxis-rg --name steelaxis-app --src-path ./publish.zip --type zip
 ```
 
 ### App Service Pricing
@@ -136,7 +136,7 @@ az webapp deploy --resource-group manimp-rg --name manimp-app --src-path ./publi
 
 ### Why Container Apps?
 
-Azure Container Apps is recommended for Manimp because:
+Azure Container Apps is recommended for SteelAxis because:
 
 1. **Cost Efficiency**: Pay-per-use pricing, scales to zero
 2. **Modern Platform**: Built for cloud-native applications
@@ -156,13 +156,13 @@ Azure Container Apps is recommended for Manimp because:
 
 ```bash
 # Create Azure Container Registry
-az acr create --resource-group manimp-rg --name manimpregistry --sku Basic
+az acr create --resource-group steelaxis-rg --name steelaxisregistry --sku Basic
 
 # Enable admin user
-az acr update --name manimpregistry --admin-enabled true
+az acr update --name steelaxisregistry --admin-enabled true
 
 # Get login credentials
-az acr credential show --name manimpregistry
+az acr credential show --name steelaxisregistry
 ```
 
 #### 2. Create Container Apps Environment
@@ -172,20 +172,20 @@ az acr credential show --name manimpregistry
 az extension add --name containerapp
 
 # Create Container Apps environment
-az containerapp env create --name manimp-env --resource-group manimp-rg --location "East US"
+az containerapp env create --name steelaxis-env --resource-group steelaxis-rg --location "East US"
 ```
 
 #### 3. Build and Push Docker Image
 
 ```bash
 # Build Docker image
-docker build -t manimpregistry.azurecr.io/manimp-web:latest .
+docker build -t steelaxisregistry.azurecr.io/steelaxis-web:latest .
 
 # Login to ACR
-az acr login --name manimpregistry
+az acr login --name steelaxisregistry
 
 # Push image
-docker push manimpregistry.azurecr.io/manimp-web:latest
+docker push steelaxisregistry.azurecr.io/steelaxis-web:latest
 ```
 
 #### 4. Deploy Container App
@@ -193,13 +193,13 @@ docker push manimpregistry.azurecr.io/manimp-web:latest
 ```bash
 # Create container app
 az containerapp create \
-  --name manimp-app \
-  --resource-group manimp-rg \
-  --environment manimp-env \
-  --image manimpregistry.azurecr.io/manimp-web:latest \
-  --registry-server manimpregistry.azurecr.io \
-  --registry-username $(az acr credential show --name manimpregistry --query username -o tsv) \
-  --registry-password $(az acr credential show --name manimpregistry --query passwords[0].value -o tsv) \
+  --name steelaxis-app \
+  --resource-group steelaxis-rg \
+  --environment steelaxis-env \
+  --image steelaxisregistry.azurecr.io/steelaxis-web:latest \
+  --registry-server steelaxisregistry.azurecr.io \
+  --registry-username $(az acr credential show --name steelaxisregistry --query username -o tsv) \
+  --registry-password $(az acr credential show --name steelaxisregistry --query passwords[0].value -o tsv) \
   --target-port 8080 \
   --ingress external \
   --min-replicas 0 \
@@ -212,10 +212,10 @@ az containerapp create \
 
 ```bash
 # Set connection strings as secrets
-az containerapp secret set --name manimp-app --resource-group manimp-rg --secrets directory-conn="Server=tcp:manimp-sql-server.database.windows.net,1433;Initial Catalog=ManimpDirectory;..."
+az containerapp secret set --name steelaxis-app --resource-group steelaxis-rg --secrets directory-conn="Server=tcp:steelaxis-sql-server.database.windows.net,1433;Initial Catalog=SteelAxisDirectory;..."
 
 # Update container app with environment variables
-az containerapp update --name manimp-app --resource-group manimp-rg --set-env-vars ASPNETCORE_ENVIRONMENT=Production ConnectionStrings__Directory=secretref:directory-conn
+az containerapp update --name steelaxis-app --resource-group steelaxis-rg --set-env-vars ASPNETCORE_ENVIRONMENT=Production ConnectionStrings__Directory=secretref:directory-conn
 ```
 
 ### Container Apps Pricing
@@ -244,7 +244,7 @@ az containerapp update --name manimp-app --resource-group manimp-rg --set-env-va
 
 ### Multi-Tenant Database Architecture
 
-Manimp uses a database-per-tenant architecture:
+SteelAxis uses a database-per-tenant architecture:
 
 1. **Directory Database**: Central database for tenant mapping
 2. **Tenant Databases**: Separate database for each company/tenant
@@ -279,9 +279,9 @@ For Azure SQL Database:
 ```json
 {
   "ConnectionStrings": {
-    "Directory": "Server=tcp:manimp-sql-server.database.windows.net,1433;Initial Catalog=ManimpDirectory;Persist Security Info=False;User ID={username};Password={password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-    "SqlServerAdmin": "Server=tcp:manimp-sql-server.database.windows.net,1433;Persist Security Info=False;User ID={admin-username};Password={admin-password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-    "TenantTemplate": "Server=tcp:manimp-sql-server.database.windows.net,1433;Initial Catalog={DB};Persist Security Info=False;User ID={username};Password={password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    "Directory": "Server=tcp:steelaxis-sql-server.database.windows.net,1433;Initial Catalog=SteelAxisDirectory;Persist Security Info=False;User ID={username};Password={password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "SqlServerAdmin": "Server=tcp:steelaxis-sql-server.database.windows.net,1433;Persist Security Info=False;User ID={admin-username};Password={admin-password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "TenantTemplate": "Server=tcp:steelaxis-sql-server.database.windows.net,1433;Initial Catalog={DB};Persist Security Info=False;User ID={username};Password={password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   }
 }
 ```
@@ -292,21 +292,21 @@ For Azure SQL Database:
 
 1. **Create Key Vault**:
 ```bash
-az keyvault create --name manimp-keyvault --resource-group manimp-rg --location "East US"
+az keyvault create --name steelaxis-keyvault --resource-group steelaxis-rg --location "East US"
 ```
 
 2. **Store Secrets**:
 ```bash
-az keyvault secret set --vault-name manimp-keyvault --name "Directory-ConnectionString" --value "Server=tcp:..."
+az keyvault secret set --vault-name steelaxis-keyvault --name "Directory-ConnectionString" --value "Server=tcp:..."
 ```
 
 3. **Configure Managed Identity**:
 ```bash
 # Enable system-assigned managed identity
-az webapp identity assign --resource-group manimp-rg --name manimp-app
+az webapp identity assign --resource-group steelaxis-rg --name steelaxis-app
 
 # Grant Key Vault access
-az keyvault set-policy --name manimp-keyvault --object-id {identity-principal-id} --secret-permissions get list
+az keyvault set-policy --name steelaxis-keyvault --object-id {identity-principal-id} --secret-permissions get list
 ```
 
 ### Security Best Practices
@@ -324,12 +324,12 @@ az keyvault set-policy --name manimp-keyvault --object-id {identity-principal-id
 
 1. **Create Application Insights**:
 ```bash
-az monitor app-insights component create --app manimp-insights --location "East US" --resource-group manimp-rg
+az monitor app-insights component create --app steelaxis-insights --location "East US" --resource-group steelaxis-rg
 ```
 
 2. **Get Instrumentation Key**:
 ```bash
-az monitor app-insights component show --app manimp-insights --resource-group manimp-rg --query instrumentationKey
+az monitor app-insights component show --app steelaxis-insights --resource-group steelaxis-rg --query instrumentationKey
 ```
 
 3. **Configure in application**:
@@ -359,7 +359,7 @@ The application includes health check endpoints:
 
 #### Auto-scaling Rules (App Service)
 ```bash
-az monitor autoscale create --resource-group manimp-rg --resource /subscriptions/{subscription-id}/resourceGroups/manimp-rg/providers/Microsoft.Web/serverfarms/manimp-plan --min-count 1 --max-count 5 --count 1
+az monitor autoscale create --resource-group steelaxis-rg --resource /subscriptions/{subscription-id}/resourceGroups/steelaxis-rg/providers/Microsoft.Web/serverfarms/steelaxis-plan --min-count 1 --max-count 5 --count 1
 ```
 
 #### Container Apps Scaling

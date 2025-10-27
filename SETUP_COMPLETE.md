@@ -1,52 +1,45 @@
-# SteelAxis - Setup Complete ✅
+# SteelAxis - Initial Setup Complete ✅
 
 ## Summary
 
-Successfully configured SteelAxis with Microsoft Entra External ID (CIAM) authentication. The application is fully integrated with the production CIAM tenant and ready for development and deployment.
+SteelAxis foundation is configured and ready for feature development. Authentication, infrastructure, and development pipelines are in place. **No business features have been implemented yet.**
 
-## Current Configuration Status
+## Configuration Status
 
-### ✅ CIAM Authentication (Production-Ready)
+### ✅ Authentication (Microsoft Entra External ID)
 
-**Tenant Information:**
+**CIAM Tenant:**
 - Tenant: `steelaxistenants.onmicrosoft.com`
 - Authority: `https://steelaxistenants.ciamlogin.com/steelaxistenants.onmicrosoft.com/B2C_1_susi`
 - User Flow: `B2C_1_susi` (Sign up and sign in)
 - Email Sign-up: Enabled with verification
 
 **App Registrations:**
-- Web Application Client ID: Stored in Azure Key Vault as `AzureAdB2C--ClientId`
-- API Resource Client ID: Stored in Azure Key Vault as `AzureAdB2C--ApiClientId`
-- API Scope: Configured in Azure Key Vault as `AzureAdB2C--DefaultScopes`
+- Web Application: Client ID stored in Azure Key Vault
+- API Resource: API Client ID stored in Azure Key Vault
+- API Scope: Configured in Azure Key Vault
 
-### ✅ Azure Resources (Dev Environment)
+### ✅ Azure Infrastructure (Dev Environment)
 
 **App Services:**
-- Web: `steelaxis-dev` (Blazor + MudBlazor)
+- Web: `steelaxis-dev` (Blazor Server + MudBlazor)
 - API: `steelaxis-dev-api` (ASP.NET Core Web API)
 
 **Key Vault:**
 - Name: `kv-Steelaxis-dev`
-- Secrets Stored:
-  - `AzureAdB2C--Authority`
-  - `AzureAdB2C--ClientId`
-  - `AzureAdB2C--ApiClientId`
-  - `AzureAdB2C--DefaultScopes`
+- Secrets: Authentication configuration stored securely
+
+**SQL Server:**
+- Configured with elastic pool
+- Ready for tenant databases
 
 ### ✅ CI/CD Pipeline (GitHub Actions)
 
-**Branch:** `dev`
-
 **Workflows:**
-- `deploy-web-dev.yml` - Deploys Web app to steelaxis-dev
-- `deploy-api-dev.yml` - Deploys API to steelaxis-dev-api
-- `ci-dev.yml` - Build, test, format check, Trivy scan
+- `deploy-web-dev.yml` - Automated Web deployment
+- `deploy-api-dev.yml` - Automated API deployment
+- `ci-dev.yml` - Build, test, format check, Trivy security scan
 - `codeql-csharp-dev.yml` - CodeQL security analysis
-
-**Required Secrets:**
-- `AZURE_CLIENT_ID` - Stored in GitHub repository secrets
-- `AZURE_TENANT_ID` - Stored in GitHub repository secrets
-- `AZURE_SUBSCRIPTION_ID` - Stored in GitHub repository secrets
 
 **Security Features:**
 - OIDC authentication (no publish profiles)
@@ -55,65 +48,30 @@ Successfully configured SteelAxis with Microsoft Entra External ID (CIAM) authen
 - Build warnings as errors
 - Dependabot weekly updates
 
-## Solution Structure Created
+## Solution Structure
+
+**8-Project Clean Architecture**
 
 ```
 SteelAxis/
-├── SteelAxis.sln                          # Solution file (8 projects)
-├── .gitignore                              # Git ignore configuration
-├── README.md                               # Solution documentation
-│
-├── SteelAxis.Shared/                       # Common models and interfaces
-│   ├── SteelAxis.Shared.csproj
-│   ├── Models/
-│   │   └── BaseEntity.cs
-│   └── Interfaces/
-│       └── IService.cs
-│
-├── SteelAxis.Auth/                         # Authentication models
-│   ├── SteelAxis.Auth.csproj
-│   └── ApplicationUser.cs                  # Extended Identity user
-│
-├── SteelAxis.Directory/                    # Central directory service
-│   ├── SteelAxis.Directory.csproj
-│   └── DirectoryDbContext.cs              # Tenant directory database
-│
-├── SteelAxis.Data/                         # Tenant database contexts
-│   ├── SteelAxis.Data.csproj
-│   └── AppDbContext.cs                    # Main tenant database context
-│
-├── SteelAxis.Services/                     # Business logic services
-│   ├── SteelAxis.Services.csproj
-│   └── Implementation/
-│       └── BaseService.cs
-│
-├── SteelAxis.Api/                          # Web API endpoints
-│   ├── SteelAxis.Api.csproj
-│   ├── Program.cs
-│   ├── appsettings.json
-│   └── Controllers/
-│       └── HealthController.cs
-│
-├── SteelAxis.Web/                          # Blazor Server web application
-│   ├── SteelAxis.Web.csproj
-│   ├── Program.cs
-│   ├── appsettings.json
-│   └── Components/
-│       ├── App.razor
-│       ├── Routes.razor
-│       ├── _Imports.razor
-│       ├── Layout/
-│       │   ├── MainLayout.razor
-│       │   └── NavMenu.razor
-│       └── Pages/
-│           ├── Home.razor
-│           └── Projects.razor
-│
-└── SteelAxis.Tests/                        # Unit and integration tests
-    ├── SteelAxis.Tests.csproj
-    ├── Usings.cs
-    └── UnitTest1.cs
+├── SteelAxis.Shared/       # Common models and interfaces
+├── SteelAxis.Auth/         # Authentication models (ApplicationUser)
+├── SteelAxis.Directory/    # Central directory service (tenant management)
+├── SteelAxis.Data/         # Tenant database contexts (to be populated)
+├── SteelAxis.Services/     # Business logic services (to be implemented)
+├── SteelAxis.Api/          # Web API endpoints (health check only)
+├── SteelAxis.Web/          # Blazor Server UI (authentication pages only)
+└── SteelAxis.Tests/        # Unit and integration tests
 ```
+
+**Current Implementation Status:**
+- ✅ Project structure and dependencies configured
+- ✅ Base entity classes created
+- ✅ Authentication pages implemented
+- ❌ **No business logic implemented**
+- ❌ **No database models beyond base entities**
+- ❌ **No API controllers beyond health check**
+- ❌ **No UI components beyond authentication**
 
 ## Build Status ✅
 
@@ -259,24 +217,46 @@ dotnet ef database update
 - Create unit tests for services
 
 ### 4. Create API Endpoints
-- Add controllers for domain entities
-- Implement CRUD operations
-- Add authentication/authorization
 
-### 5. Build UI
-- Create Blazor components for features
-- Add dialogs and forms
-- Implement state management
+## Next Steps
 
-## Notes
+Ready for feature development following established patterns:
 
-- All projects compile successfully with no errors
-- Solution follows the Manimp architecture pattern
-- Uses SteelAxis.* namespace instead of Manimp.*
-- Ready for feature development
-- MudBlazor configured for modern UI
-- Clean architecture with clear separation of concerns
+### 1. Review Development Guidelines
+- Read `.github/copilot-instructions.md` for complete workflow
+- Understand API-first development approach
+- Review feature documentation template in `docs/DOCUMENTATION-TEMPLATE.md`
 
-## Original Reference
+### 2. Implement EN 1090 Foundation
+- Material certificate management (database models, services, API, UI)
+- Material traceability system
+- Document management system
 
-Based on the solution structure from: https://github.com/petersonmatiss/manimp
+### 3. Build Quality Management Features
+- Non-Conformance Reports (NCR)
+- Corrective Action Requests (CAR)
+- Quality control workflows
+
+### 4. Develop Project Management
+- Project creation and tracking
+- Material assignment to projects
+- Progress monitoring
+
+### 5. Create Customer Portal
+- Secure document sharing
+- Token-based access for external customers
+- Project visibility
+
+See `docs/README.md` and `docs/en-1090-compliance/EN-1090-COMPLETE-GUIDE.md` for detailed implementation guidance.
+
+---
+
+## Important Notes
+
+- ✅ **Infrastructure complete** - Authentication, Azure, CI/CD configured
+- ❌ **No features implemented** - SteelAxis is a clean slate
+- 📋 **Specifications ready** - EN 1090 requirements documented
+- 🚀 **Ready to build** - Follow API-first development patterns
+
+**All feature development starts now. Nothing is migrated from Manimp.**
+

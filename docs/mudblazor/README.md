@@ -1,6 +1,6 @@
 # MudBlazor Documentation
 
-Official MudBlazor component documentation, patterns, and best practices for Manimp.
+Official MudBlazor component documentation, patterns, and best practices for SteelAxis.
 
 ---
 
@@ -9,7 +9,7 @@ Official MudBlazor component documentation, patterns, and best practices for Man
 This directory contains MudBlazor-specific documentation to help developers:
 - Find component usage examples quickly
 - Follow consistent UI patterns
-- Understand MudBlazor configuration in Manimp
+- Understand MudBlazor configuration in SteelAxis
 - Troubleshoot common MudBlazor issues
 
 ---
@@ -38,7 +38,7 @@ When implementing UI features:
 - **Patterns**: Reusable UI patterns (dialogs, forms, tables, etc.)
 - **Configuration**: MudBlazor setup and configuration docs
 - **Troubleshooting**: Common issues and solutions
-- **Best Practices**: Dos and don'ts for MudBlazor in Manimp
+- **Best Practices**: Dos and don'ts for MudBlazor in SteelAxis
 - **Integration Notes**: How MudBlazor integrates with Blazor Server
 
 ### ❌ Don't Include:
@@ -186,7 +186,7 @@ Text input field component
 
 ## 🚀 Quick Start
 
-### Common MudBlazor Components in Manimp
+### Common MudBlazor Components in SteelAxis
 
 #### Dialogs
 ```razor
@@ -241,21 +241,21 @@ var result = await dialog.Result;
 
 When adding MudBlazor documentation:
 
-1. **Test First**: Ensure examples work in Manimp context
+1. **Test First**: Ensure examples work in SteelAxis context
 2. **Be Specific**: Show actual working code, not pseudo-code
 3. **Context Matters**: Include render mode annotations (`@rendermode InteractiveServer`)
 4. **Cross-Reference**: Link to official docs for detailed API info
-5. **Real Examples**: Use examples from actual Manimp components when possible
+5. **Real Examples**: Use examples from actual SteelAxis components when possible
 
 ---
 
-## 🎨 Manimp MudBlazor Configuration
+## 🎨 SteelAxis MudBlazor Configuration
 
 ### Current Setup
-- **Version**: Check `Manimp.Web/Manimp.Web.csproj` for MudBlazor version
-- **Theme**: Custom theme in `Manimp.Web/Themes/`
+- **Version**: Check `SteelAxis.Web/SteelAxis.Web.csproj` for MudBlazor version
+- **Theme**: Custom theme in `SteelAxis.Web/Themes/`
 - **Render Mode**: `InteractiveServer` (required for all components)
-- **Configuration**: `Manimp.Web/Program.cs` → `builder.Services.AddMudServices()`
+- **Configuration**: `SteelAxis.Web/Program.cs` → `builder.Services.AddMudServices()`
 
 ### Key Settings
 ```csharp
@@ -292,7 +292,7 @@ builder.Services.AddMudServices(config =>
 1. Check this directory first
 2. Search official MudBlazor docs
 3. Check `docs/fixes-and-improvements/` for known issues
-4. Review existing Manimp components for patterns
+4. Review existing SteelAxis components for patterns
 5. Ask in team chat or create documentation request
 
 ---
@@ -321,4 +321,4 @@ Upload MudBlazor documentation files here:
 
 ---
 
-**Remember**: Keep documentation practical, tested, and Manimp-specific! 🚀
+**Remember**: Keep documentation practical, tested, and SteelAxis-specific! 🚀

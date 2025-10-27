@@ -1,4 +1,4 @@
-# EN 1090 Compliance Requirements for Manimp Platform
+# EN 1090 Compliance Requirements for SteelAxis Platform
 
 **Document Version:** 1.0  
 **Last Updated:** September 18, 2025  
@@ -58,7 +58,7 @@ EN 1090-2 defines four execution classes (EXC) based on the consequences of fail
 - Agricultural structures
 - Basic warehouse structures
 
-**Manimp Implementation:**
+**SteelAxis Implementation:**
 - Available in **Basic Tier** subscription
 - Simplified quality control workflows
 - Basic material traceability
@@ -83,7 +83,7 @@ EN 1090-2 defines four execution classes (EXC) based on the consequences of fail
 - Commercial structures
 - Multi-story residential buildings
 
-**Manimp Implementation:**
+**SteelAxis Implementation:**
 - Available in **Basic Tier** subscription (enhanced features)
 - Enhanced quality control workflows
 - Material batch tracking mandatory
@@ -110,7 +110,7 @@ EN 1090-2 defines four execution classes (EXC) based on the consequences of fail
 - High-rise buildings
 - Stadiums and public venues
 
-**Manimp Implementation:**
+**SteelAxis Implementation:**
 - Available in **Professional Tier** subscription
 - Comprehensive traceability systems
 - Advanced quality management
@@ -138,7 +138,7 @@ EN 1090-2 defines four execution classes (EXC) based on the consequences of fail
 - Seismic zones (high seismicity)
 - Critical infrastructure
 
-**Manimp Implementation:**
+**SteelAxis Implementation:**
 - Available in **Enterprise Tier** subscription only
 - Maximum traceability requirements
 - Complete quality documentation
@@ -192,7 +192,7 @@ CREATE TABLE SteelGrades (
 #### Material Test Certificates
 **EN 10204 Certificate Types:**
 
-| Type | Description | Third Party | Manimp Tier Requirement |
+| Type | Description | Third Party | SteelAxis Tier Requirement |
 |------|-------------|-------------|-------------------------|
 | 2.1  | Test report based on routine tests | No | Basic (Optional) |
 | 2.2  | Test report based on routine tests | Yes | Professional |
@@ -1025,7 +1025,7 @@ public static class WelderValidationRules
 
 ## Conclusion
 
-This comprehensive EN 1090 implementation guide provides the complete framework for ensuring your Manimp platform meets all European steel construction standards. The implementation should be done in phases, starting with the foundational elements and progressing to the advanced compliance features.
+This comprehensive EN 1090 implementation guide provides the complete framework for ensuring your SteelAxis platform meets all European steel construction standards. The implementation should be done in phases, starting with the foundational elements and progressing to the advanced compliance features.
 
 ### Key Success Factors:
 1. **Proper execution class implementation** with subscription tier alignment
@@ -1040,7 +1040,7 @@ This comprehensive EN 1090 implementation guide provides the complete framework 
 3. **Establish quality management processes** in Phase 2
 4. **Complete documentation and compliance systems** in Phase 3
 
-This implementation will position Manimp as the leading EN 1090 compliant steel construction management platform in the European market.
+This implementation will position SteelAxis as the leading EN 1090 compliant steel construction management platform in the European market.
 
 ---
 

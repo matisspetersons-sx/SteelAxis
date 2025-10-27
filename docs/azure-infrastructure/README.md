@@ -1,6 +1,6 @@
 # Azure Infrastructure Documentation
 
-Complete Azure cloud infrastructure setup, DNS configuration, and CI/CD deployment guides for Manimp.
+Complete Azure cloud infrastructure setup, DNS configuration, and CI/CD deployment guides for SteelAxis.
 
 ---
 
@@ -39,9 +39,9 @@ Complete Azure cloud infrastructure setup, DNS configuration, and CI/CD deployme
 - Complete verification checklist
 
 **Wildcard Domains:**
-- `*.manimp.com` → Main application
-- `*.files.manimp.com` → File portal
-- `*.docs.manimp.com` → Client portal
+- `*.steelaxis.com` → Main application
+- `*.files.steelaxis.com` → File portal
+- `*.docs.steelaxis.com` → Client portal
 
 ---
 
@@ -106,8 +106,8 @@ git push origin main
 # Or manually:
 dotnet publish -c Release
 az webapp deployment source config-zip \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
   --src ./publish.zip
 ```
 
@@ -144,15 +144,15 @@ ANNUAL                      $4,776.36/year
 ```bash
 # App Service
 az webapp show \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
   --query state
 
 # SQL Database
 az sql db show \
-  --resource-group rg-manimp-prod \
-  --server sql-manimp-prod \
-  --name sqldb-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --server sql-steelaxis-prod \
+  --name sqldb-steelaxis-prod \
   --query status
 ```
 
@@ -160,27 +160,27 @@ az sql db show \
 ```bash
 # Stream logs
 az webapp log tail \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod
 
 # Download logs
 az webapp log download \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod
 ```
 
 ### Scale Application
 ```bash
 # Scale out (add instances)
 az appservice plan update \
-  --resource-group rg-manimp-prod \
-  --name plan-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name plan-steelaxis-prod \
   --number-of-workers 3
 
 # Scale up (upgrade tier)
 az appservice plan update \
-  --resource-group rg-manimp-prod \
-  --name plan-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name plan-steelaxis-prod \
   --sku P2v3
 ```
 
@@ -191,11 +191,11 @@ az appservice plan update \
 ### DNS Not Resolving
 ```bash
 # Check name servers
-dig manimp.com NS
+dig steelaxis.com NS
 
 # Check DNS propagation
-nslookup acme.manimp.com
-nslookup acme.files.manimp.com
+nslookup acme.steelaxis.com
+nslookup acme.files.steelaxis.com
 
 # Force DNS cache clear (macOS)
 sudo dscacheutil -flushcache
@@ -206,23 +206,23 @@ sudo killall -HUP mDNSResponder
 ```bash
 # Check certificate status
 az webapp config ssl list \
-  --resource-group rg-manimp-prod
+  --resource-group rg-steelaxis-prod
 
 # Verify SSL binding
-curl -I https://acme.manimp.com
-openssl s_client -connect acme.manimp.com:443
+curl -I https://acme.steelaxis.com
+openssl s_client -connect acme.steelaxis.com:443
 ```
 
 ### App Service Not Starting
 ```bash
 # Check application logs
-az webapp log tail --resource-group rg-manimp-prod --name app-manimp-prod
+az webapp log tail --resource-group rg-steelaxis-prod --name app-steelaxis-prod
 
 # Restart app service
-az webapp restart --resource-group rg-manimp-prod --name app-manimp-prod
+az webapp restart --resource-group rg-steelaxis-prod --name app-steelaxis-prod
 
 # Check health endpoint
-curl https://app-manimp-prod.azurewebsites.net/health
+curl https://app-steelaxis-prod.azurewebsites.net/health
 ```
 
 ---
@@ -252,9 +252,9 @@ exceptions
 ```bash
 # High CPU alert
 az monitor metrics alert create \
-  --resource-group rg-manimp-prod \
+  --resource-group rg-steelaxis-prod \
   --name "High CPU Usage" \
-  --scopes /subscriptions/.../app-manimp-prod \
+  --scopes /subscriptions/.../app-steelaxis-prod \
   --condition "avg Percentage CPU > 80" \
   --description "Alert when CPU exceeds 80%"
 ```
@@ -265,16 +265,16 @@ az monitor metrics alert create \
 
 - **[../authentication/azure-b2c-authentication.md](../authentication/azure-b2c-authentication.md)** - Azure AD B2C setup
 - **[../file-storage/file-storage-multi-domain-architecture.md](../file-storage/file-storage-multi-domain-architecture.md)** - File storage Azure Blob integration
-- **[../general/manimp-strategic-guide.md](../general/manimp-strategic-guide.md)** - Overall architecture strategy
+- **[../general/steelaxis-strategic-guide.md](../general/steelaxis-strategic-guide.md)** - Overall architecture strategy
 
 ---
 
 ## 🎯 What's Next
 
 ### Immediate Tasks (This Week)
-- [ ] Create Azure resource group: `rg-manimp-prod`
+- [ ] Create Azure resource group: `rg-steelaxis-prod`
 - [ ] Provision SQL Server and database
-- [ ] Create Azure DNS zone for `manimp.com`
+- [ ] Create Azure DNS zone for `steelaxis.com`
 - [ ] Update domain registrar name servers
 - [ ] Create Key Vault and store secrets
 

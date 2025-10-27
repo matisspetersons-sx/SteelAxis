@@ -72,7 +72,7 @@ public class NonConformanceReport
 
 ## 2. Workflow Status Constants
 
-Location: `Manimp.Shared/Models/EN1090Phase2.cs`
+Location: `SteelAxis.Shared/Models/EN1090Phase2.cs`
 
 ```csharp
 public static class EN1090Phase2Constants
@@ -324,18 +324,18 @@ private Color GetStepColor(string status)
 ## 8. Files Modified
 
 ### Core Model & Database
-1. ✅ `Manimp.Shared/Models/EN1090Phase2.cs` - Enhanced NonConformanceReport
-2. ✅ `Manimp.Shared/Models/EN1090ProgressTracking.cs` - Removed duplicate
-3. ✅ `Manimp.Data/AppDbContext.cs` - Updated configuration
+1. ✅ `SteelAxis.Shared/Models/EN1090Phase2.cs` - Enhanced NonConformanceReport
+2. ✅ `SteelAxis.Shared/Models/EN1090ProgressTracking.cs` - Removed duplicate
+3. ✅ `SteelAxis.Data/AppDbContext.cs` - Updated configuration
 
 ### Services & API
-4. ✅ `Manimp.Services/AssemblyProgressService.cs` - Updated methods
-5. ✅ `Manimp.Api/Controllers/AssemblyProgressController.cs` - Updated endpoints
-6. ✅ `Manimp.Web/Services/AssemblyProgressHttpService.cs` - Updated client
+4. ✅ `SteelAxis.Services/AssemblyProgressService.cs` - Updated methods
+5. ✅ `SteelAxis.Api/Controllers/AssemblyProgressController.cs` - Updated endpoints
+6. ✅ `SteelAxis.Web/Services/AssemblyProgressHttpService.cs` - Updated client
 
 ### UI Components
-7. ✅ `Manimp.Web/Components/Pages/NCRManagement.razor` - Full workflow UI
-8. ✅ `Manimp.Web/Components/Pages/EN1090QualityControl.razor` - Enhanced form
+7. ✅ `SteelAxis.Web/Components/Pages/NCRManagement.razor` - Full workflow UI
+8. ✅ `SteelAxis.Web/Components/Pages/EN1090QualityControl.razor` - Enhanced form
 
 ---
 

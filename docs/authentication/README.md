@@ -1,13 +1,13 @@
 # Authentication Documentation
 
-Azure AD B2C authentication implementation for Manimp's multi-domain architecture.
+Azure AD B2C authentication implementation for SteelAxis's multi-domain architecture.
 
 ---
 
-## 📚 Documents
+## Related Documentation
 
-### 🔐 [azure-b2c-authentication.md](./azure-b2c-authentication.md)
-**Complete Azure AD B2C setup guide** (800+ lines) ⭐
+- **[ENTRA_EXTERNAL_ID_SETUP.md](../../ENTRA_EXTERNAL_ID_SETUP.md)** - Entra External ID setup guide
+- **[CONFIGURATION.md](../../CONFIGURATION.md)** - Configuration management
 
 **Contents:**
 - Architecture overview with diagrams
@@ -29,7 +29,7 @@ Azure AD B2C authentication implementation for Manimp's multi-domain architectur
 
 ```
 Internal Users (Employees)
-├─ Domain: *.manimp.com, *.files.manimp.com
+├─ Domain: *.steelaxis.com, *.files.steelaxis.com
 ├─ B2C Policy: B2C_1_SignUpSignIn
 ├─ Roles: Admin, Manager, User
 ├─ Identity Providers: Email, Microsoft Account, Google
@@ -37,7 +37,7 @@ Internal Users (Employees)
 └─ Claims: email, role, tenant_id, user_id
 
 External Users (Clients)
-├─ Domain: *.docs.manimp.com
+├─ Domain: *.docs.steelaxis.com
 ├─ B2C Policy: B2C_1_External_SignUpSignIn
 ├─ Roles: Project-based access
 ├─ Identity Providers: Email only
@@ -53,9 +53,9 @@ External Users (Clients)
 ```bash
 # Via Azure Portal:
 # Search "Azure AD B2C" → Create tenant
-# Organization: Manimp
-# Domain: manimp.onmicrosoft.com
-# Resource group: rg-manimp-prod
+# Organization: SteelAxis
+# Domain: steelaxis.onmicrosoft.com
+# Resource group: rg-steelaxis-prod
 ```
 
 ### 2. Create User Flows
@@ -75,21 +75,20 @@ External Flow:
 
 ### 3. Create App Registrations
 ```bash
-# Internal App
-Name: Manimp-Internal
+Name: SteelAxis-Internal
 Redirect URIs:
-  - https://*.manimp.com/signin-oidc
-  - https://*.files.manimp.com/signin-oidc
+  - https://*.steelaxis.com/signin-oidc
+  - https://*.files.steelaxis.com/signin-oidc
 
-# External App
-Name: Manimp-External
+App 2:
+Name: SteelAxis-External
 Redirect URIs:
-  - https://*.docs.manimp.com/signin-oidc-external
+  - https://*.docs.steelaxis.com/signin-oidc-external
 ```
 
 ### 4. Install NuGet Packages
 ```bash
-cd Manimp.Web
+cd SteelAxis.Web
 dotnet add package Microsoft.Identity.Web
 dotnet add package Microsoft.Identity.Web.UI
 ```
@@ -99,8 +98,8 @@ dotnet add package Microsoft.Identity.Web.UI
 // appsettings.json
 {
   "AzureAdB2C": {
-    "Instance": "https://manimp.b2clogin.com",
-    "Domain": "manimp.onmicrosoft.com",
+    "Instance": "https://steelaxis.b2clogin.com",
+    "Domain": "steelaxis.onmicrosoft.com",
     "ClientId": "YOUR-INTERNAL-CLIENT-ID",
     "SignUpSignInPolicyId": "B2C_1_SignUpSignIn",
     "ExternalClientId": "YOUR-EXTERNAL-CLIENT-ID",
@@ -178,7 +177,7 @@ Total: $39.00/month
 ### Test Internal Login
 ```bash
 # Start app
-cd Manimp.Web
+cd SteelAxis.Web
 dotnet run --urls https://localhost:5001
 
 # Visit
@@ -321,7 +320,7 @@ customEvents
 
 - **[../azure-infrastructure/azure-infrastructure-setup.md](../azure-infrastructure/azure-infrastructure-setup.md)** - B2C tenant creation
 - **[../file-storage/file-storage-multi-domain-architecture.md](../file-storage/file-storage-multi-domain-architecture.md)** - Multi-domain routing
-- **[../general/manimp-strategic-guide.md](../general/manimp-strategic-guide.md)** - Overall authentication strategy
+- **[../general/steelaxis-strategic-guide.md](../general/steelaxis-strategic-guide.md)** - Overall authentication strategy
 
 ---
 
@@ -338,15 +337,15 @@ customEvents
 ## 🎯 What's Next
 
 ### Week 1: B2C Tenant Setup
-- [ ] Create Azure AD B2C tenant (manimp.onmicrosoft.com)
+- [ ] Create Azure AD B2C tenant (steelaxis.onmicrosoft.com)
 - [ ] Create B2C_1_SignUpSignIn user flow (internal)
 - [ ] Create B2C_1_External_SignUpSignIn user flow (external)
 - [ ] Configure identity providers (Email, Microsoft, Google)
 - [ ] Customize B2C UI with company branding
 
 ### Week 2: App Registrations
-- [ ] Register Manimp-Internal app in B2C
-- [ ] Register Manimp-External app in B2C
+- [ ] Register SteelAxis-Internal app in B2C
+- [ ] Register SteelAxis-External app in B2C
 - [ ] Configure redirect URIs (wildcard domains)
 - [ ] Generate client secrets
 - [ ] Store credentials in Azure Key Vault

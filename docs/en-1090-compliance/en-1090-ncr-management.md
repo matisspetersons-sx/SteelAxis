@@ -1159,7 +1159,7 @@ This comprehensive NCR management system provides complete deviation handling fo
 - **Prevention Effectiveness:** Reduction in repeat NCRs
 - **Cost Control:** Minimizing impact through rapid resolution
 
-This NCR system positions Manimp as the most comprehensive EN 1090 compliant platform available, providing manufacturers with the tools needed to maintain the highest quality standards across all execution classes.
+This NCR system positions SteelAxis as the most comprehensive EN 1090 compliant platform available, providing manufacturers with the tools needed to maintain the highest quality standards across all execution classes.
 
 ---
 

@@ -1,6 +1,6 @@
 # EN 1090 Quick Reference Guide
 
-This document provides a quick reference for developers and project managers working with EN 1090 compliance in the Manimp application.
+This document provides a quick reference for developers and project managers working with EN 1090 compliance in the SteelAxis application.
 
 ## Quick Decision Matrix
 
@@ -247,7 +247,7 @@ Assemblies -> NonConformanceReports
 
 ---
 
-*This quick reference guide is designed for daily use by development teams working on EN 1090 compliance features in the Manimp application.*
+*This quick reference guide is designed for daily use by development teams working on EN 1090 compliance features in the SteelAxis application.*
 
 **Last Updated:** October 2025  
 **Version:** 2.0  

@@ -1,6 +1,6 @@
 # EN 1090 Software Development Requirements
 
-This document provides specific technical requirements and implementation guidelines for integrating EN 1090 compliance into the Manimp application.
+This document provides specific technical requirements and implementation guidelines for integrating EN 1090 compliance into the SteelAxis application.
 
 ## Table of Contents
 
@@ -605,7 +605,7 @@ Add to main navigation:
 **Component Path:** `/Components/EN1090/ExecutionClassWizard.razor`
 
 ```razor
-@using Manimp.Services.EN1090
+@using SteelAxis.Services.EN1090
 @inject IEN1090Service EN1090Service
 
 <MudStepper @ref="stepper" Linear="true">
@@ -810,7 +810,7 @@ Add to main navigation:
 
 ## Workflow Integration
 
-### Integration with Existing Manimp Features
+### Integration with Existing SteelAxis Features
 
 #### 1. Project Management Integration
 
@@ -1190,4 +1190,4 @@ dotnet ef migrations add EN1090_Phase3_AdvancedReporting
 - **User adoption:** Achieve 90% user adoption within 6 months
 - **Customer satisfaction:** Maintain 4.5+ rating for compliance features
 
-This implementation guide provides the technical foundation for integrating comprehensive EN 1090 compliance into the Manimp application, ensuring both regulatory adherence and operational efficiency.
+This implementation guide provides the technical foundation for integrating comprehensive EN 1090 compliance into the SteelAxis application, ensuring both regulatory adherence and operational efficiency.

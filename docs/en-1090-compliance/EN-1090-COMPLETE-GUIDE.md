@@ -305,7 +305,7 @@ CREATE TABLE DocumentVersions (
 ### Phase 1: Core Traceability (Week 1-2)
 ```bash
 # Database migrations
-cd Manimp.Data
+cd SteelAxis.Data
 dotnet ef migrations add AddMaterialCertificates
 dotnet ef migrations add AddWeldingProcedures
 dotnet ef database update

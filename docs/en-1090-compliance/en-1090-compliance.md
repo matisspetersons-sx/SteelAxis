@@ -1,6 +1,6 @@
 # EN 1090 Steel Construction Manufacturing Compliance Guide
 
-This document provides comprehensive guidance on EN 1090 requirements for steel construction manufacturing, with specific focus on aspects necessary for software development and compliance tracking within the Manimp application.
+This document provides comprehensive guidance on EN 1090 requirements for steel construction manufacturing, with specific focus on aspects necessary for software development and compliance tracking within the SteelAxis application.
 
 ## Table of Contents
 
@@ -920,7 +920,7 @@ Steel Construction Compliance
 
 ---
 
-*This document serves as a comprehensive guide for implementing EN 1090 compliance within the Manimp steel construction management application. It should be regularly updated to reflect changes in standards and regulatory requirements.*
+*This document serves as a comprehensive guide for implementing EN 1090 compliance within the SteelAxis steel construction management application. It should be regularly updated to reflect changes in standards and regulatory requirements.*
 
 **Document Version:** 1.0  
 **Last Updated:** January 2025  

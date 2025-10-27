@@ -14,8 +14,8 @@
 └─────────────────────────────────────────────────────────────┘
 
 1. Azure DNS
-   ├── Zone: manimp.com
-   ├── Wildcard Records: *.manimp.com, *.files.manimp.com, *.docs.manimp.com
+   ├── Zone: steelaxis.com
+   ├── Wildcard Records: *.steelaxis.com, *.files.steelaxis.com, *.docs.steelaxis.com
    └── Cost: $0.50/zone + $0.40/million queries
 
 2. Azure App Service (P1v3)
@@ -25,7 +25,7 @@
    └── Cost: $214/month
 
 3. Azure Blob Storage
-   ├── Container: manimp-files
+   ├── Container: steelaxis-files
    ├── Tier: Hot (active files), Cool (archive)
    └── Cost: $18/month (1TB)
 
@@ -51,9 +51,9 @@ Total Monthly Cost: ~$235 (for 1TB storage, moderate traffic)
 ```bash
 # Create resource group in East US (or your preferred region)
 az group create \
-  --name rg-manimp-prod \
+  --name rg-steelaxis-prod \
   --location eastus \
-  --tags Environment=Production Project=Manimp
+  --tags Environment=Production Project=SteelAxis
 ```
 
 ---
@@ -65,13 +65,13 @@ az group create \
 ```bash
 # Create DNS zone for your domain
 az network dns zone create \
-  --resource-group rg-manimp-prod \
-  --name manimp.com
+  --resource-group rg-steelaxis-prod \
+  --name steelaxis.com
 
 # Get name servers (you'll need these for your domain registrar)
 az network dns zone show \
-  --resource-group rg-manimp-prod \
-  --name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --name steelaxis.com \
   --query nameServers \
   --output table
 
@@ -87,43 +87,43 @@ az network dns zone show \
 ```bash
 # Get App Service outbound IP addresses first
 az webapp show \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
   --query outboundIpAddresses \
   --output tsv
 
 # Add wildcard A record for main app (using first outbound IP)
 az network dns record-set a add-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "*" \
   --ipv4-address <first-outbound-ip>
 
 # Add CNAME for file portal
 az network dns record-set cname set-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "*.files" \
-  --cname app-manimp-prod.azurewebsites.net
+  --cname app-steelaxis-prod.azurewebsites.net
 
 # Add CNAME for client portal
 az network dns record-set cname set-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "*.docs" \
-  --cname app-manimp-prod.azurewebsites.net
+  --cname app-steelaxis-prod.azurewebsites.net
 
 # Add root A record (optional, for apex domain)
 az network dns record-set a add-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "@" \
   --ipv4-address <first-outbound-ip>
 
 # Add TXT record for domain verification
 az network dns record-set txt add-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "asuid" \
   --value "<your-app-service-verification-code>"
 ```
@@ -133,14 +133,14 @@ az network dns record-set txt add-record \
 ```bash
 # List all records
 az network dns record-set list \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --output table
 
 # Test DNS resolution (after propagation)
-nslookup acme.manimp.com ns1-01.azure-dns.com
-nslookup acme.files.manimp.com ns1-01.azure-dns.com
-nslookup acme.docs.manimp.com ns1-01.azure-dns.com
+nslookup acme.steelaxis.com ns1-01.azure-dns.com
+nslookup acme.files.steelaxis.com ns1-01.azure-dns.com
+nslookup acme.docs.steelaxis.com ns1-01.azure-dns.com
 ```
 
 #### 2.4 Update Domain Registrar
@@ -180,16 +180,16 @@ nslookup acme.docs.manimp.com ns1-01.azure-dns.com
 ```bash
 # Create Premium v3 plan (required for custom domains)
 az appservice plan create \
-  --name plan-manimp-prod \
-  --resource-group rg-manimp-prod \
+  --name plan-steelaxis-prod \
+  --resource-group rg-steelaxis-prod \
   --location eastus \
   --sku P1v3 \
   --is-linux false
 
 # Alternative: Standard tier (cheaper, still supports custom domains)
 az appservice plan create \
-  --name plan-manimp-prod \
-  --resource-group rg-manimp-prod \
+  --name plan-steelaxis-prod \
+  --resource-group rg-steelaxis-prod \
   --location eastus \
   --sku S1 \
   --is-linux false
@@ -200,15 +200,15 @@ az appservice plan create \
 ```bash
 # Create web app
 az webapp create \
-  --name app-manimp-prod \
-  --resource-group rg-manimp-prod \
-  --plan plan-manimp-prod \
+  --name app-steelaxis-prod \
+  --resource-group rg-steelaxis-prod \
+  --plan plan-steelaxis-prod \
   --runtime "DOTNET|8.0"
 
 # Configure app settings
 az webapp config appsettings set \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
   --settings \
     ASPNETCORE_ENVIRONMENT=Production \
     WEBSITE_RUN_FROM_PACKAGE=1
@@ -219,21 +219,21 @@ az webapp config appsettings set \
 ```bash
 # Add wildcard custom domain for main app
 az webapp config hostname add \
-  --resource-group rg-manimp-prod \
-  --webapp-name app-manimp-prod \
-  --hostname "*.manimp.com"
+  --resource-group rg-steelaxis-prod \
+  --webapp-name app-steelaxis-prod \
+  --hostname "*.steelaxis.com"
 
 # Add wildcard for file portal
 az webapp config hostname add \
-  --resource-group rg-manimp-prod \
-  --webapp-name app-manimp-prod \
-  --hostname "*.files.manimp.com"
+  --resource-group rg-steelaxis-prod \
+  --webapp-name app-steelaxis-prod \
+  --hostname "*.files.steelaxis.com"
 
 # Add wildcard for client portal
 az webapp config hostname add \
-  --resource-group rg-manimp-prod \
-  --webapp-name app-manimp-prod \
-  --hostname "*.docs.manimp.com"
+  --resource-group rg-steelaxis-prod \
+  --webapp-name app-steelaxis-prod \
+  --hostname "*.docs.steelaxis.com"
 ```
 
 **Note:** Wildcard custom domains require Standard tier or higher.
@@ -246,9 +246,9 @@ az webapp config hostname add \
 # Create managed certificate (only via Portal currently)
 # 1. Azure Portal → App Service → Certificates
 # 2. Click "Add Certificate" → "Create App Service Managed Certificate"
-# 3. Select custom domain: *.manimp.com
+# 3. Select custom domain: *.steelaxis.com
 # 4. Click "Validate" → "Add"
-# 5. Repeat for *.files.manimp.com and *.docs.manimp.com
+# 5. Repeat for *.files.steelaxis.com and *.docs.steelaxis.com
 # 6. Certificates auto-renew every 6 months
 ```
 
@@ -262,24 +262,24 @@ brew install certbot
 sudo certbot certonly \
   --manual \
   --preferred-challenges dns \
-  -d "*.manimp.com" \
-  -d "*.files.manimp.com" \
-  -d "*.docs.manimp.com"
+  -d "*.steelaxis.com" \
+  -d "*.files.steelaxis.com" \
+  -d "*.docs.steelaxis.com"
 
 # Follow instructions to add TXT records to Azure DNS
 # After validation, upload certificate to Azure
 
 # Upload certificate to App Service
 az webapp config ssl upload \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
-  --certificate-file /etc/letsencrypt/live/manimp.com/fullchain.pem \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
+  --certificate-file /etc/letsencrypt/live/steelaxis.com/fullchain.pem \
   --certificate-password ""
 
 # Bind certificate to custom domain
 az webapp config ssl bind \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
   --certificate-thumbprint <thumbprint> \
   --ssl-type SNI
 ```
@@ -289,36 +289,36 @@ az webapp config ssl bind \
 ```bash
 # Import certificate to Key Vault
 az keyvault certificate import \
-  --vault-name kv-manimp-prod \
-  --name wildcard-manimp-com \
+  --vault-name kv-steelaxis-prod \
+  --name wildcard-steelaxis-com \
   --file certificate.pfx \
   --password "cert-password"
 
 # Grant App Service access to Key Vault
 az webapp identity assign \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod
 
 # Get service principal ID
 SP_ID=$(az webapp identity show \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
   --query principalId \
   --output tsv)
 
 # Grant permissions
 az keyvault set-policy \
-  --name kv-manimp-prod \
+  --name kv-steelaxis-prod \
   --object-id $SP_ID \
   --secret-permissions get \
   --certificate-permissions get
 
 # Reference certificate in App Service
 az webapp config ssl import \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
-  --key-vault kv-manimp-prod \
-  --key-vault-certificate-name wildcard-manimp-com
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
+  --key-vault kv-steelaxis-prod \
+  --key-vault-certificate-name wildcard-steelaxis-com
 ```
 
 ---
@@ -330,8 +330,8 @@ az webapp config ssl import \
 ```bash
 # Create storage account
 az storage account create \
-  --name manimpblob \
-  --resource-group rg-manimp-prod \
+  --name steelaxisblob \
+  --resource-group rg-steelaxis-prod \
   --location eastus \
   --sku Standard_LRS \
   --kind StorageV2 \
@@ -341,14 +341,14 @@ az storage account create \
 
 # Enable blob versioning
 az storage account blob-service-properties update \
-  --account-name manimpblob \
-  --resource-group rg-manimp-prod \
+  --account-name steelaxisblob \
+  --resource-group rg-steelaxis-prod \
   --enable-versioning true
 
 # Enable soft delete (30 days retention)
 az storage account blob-service-properties update \
-  --account-name manimpblob \
-  --resource-group rg-manimp-prod \
+  --account-name steelaxisblob \
+  --resource-group rg-steelaxis-prod \
   --enable-delete-retention true \
   --delete-retention-days 30
 ```
@@ -358,22 +358,22 @@ az storage account blob-service-properties update \
 ```bash
 # Get storage account key
 STORAGE_KEY=$(az storage account keys list \
-  --resource-group rg-manimp-prod \
-  --account-name manimpblob \
+  --resource-group rg-steelaxis-prod \
+  --account-name steelaxisblob \
   --query "[0].value" \
   --output tsv)
 
 # Create container for files
 az storage container create \
-  --name manimp-files \
-  --account-name manimpblob \
+  --name steelaxis-files \
+  --account-name steelaxisblob \
   --account-key $STORAGE_KEY \
   --public-access off
 
 # Create archive container
 az storage container create \
-  --name manimp-archive \
-  --account-name manimpblob \
+  --name steelaxis-archive \
+  --account-name steelaxisblob \
   --account-key $STORAGE_KEY \
   --public-access off
 ```
@@ -384,11 +384,11 @@ az storage container create \
 az storage cors add \
   --services b \
   --methods GET POST PUT DELETE HEAD \
-  --origins "https://*.manimp.com" "https://*.files.manimp.com" \
+  --origins "https://*.steelaxis.com" "https://*.files.steelaxis.com" \
   --allowed-headers "*" \
   --exposed-headers "*" \
   --max-age 3600 \
-  --account-name manimpblob \
+  --account-name steelaxisblob \
   --account-key $STORAGE_KEY
 ```
 
@@ -443,8 +443,8 @@ Apply policy:
 
 ```bash
 az storage account management-policy create \
-  --account-name manimpblob \
-  --resource-group rg-manimp-prod \
+  --account-name steelaxisblob \
+  --resource-group rg-steelaxis-prod \
   --policy @lifecycle-policy.json
 ```
 
@@ -457,15 +457,15 @@ az storage account management-policy create \
 ```bash
 # Create Key Vault
 az keyvault create \
-  --name kv-manimp-prod \
-  --resource-group rg-manimp-prod \
+  --name kv-steelaxis-prod \
+  --resource-group rg-steelaxis-prod \
   --location eastus \
   --enable-soft-delete true \
   --retention-days 90
 
 # Grant App Service access
 az keyvault set-policy \
-  --name kv-manimp-prod \
+  --name kv-steelaxis-prod \
   --object-id $SP_ID \
   --secret-permissions get list
 ```
@@ -475,15 +475,15 @@ az keyvault set-policy \
 ```bash
 # Storage connection string
 az keyvault secret set \
-  --vault-name kv-manimp-prod \
+  --vault-name kv-steelaxis-prod \
   --name BlobStorageConnectionString \
-  --value "DefaultEndpointsProtocol=https;AccountName=manimpblob;AccountKey=$STORAGE_KEY;EndpointSuffix=core.windows.net"
+  --value "DefaultEndpointsProtocol=https;AccountName=steelaxisblob;AccountKey=$STORAGE_KEY;EndpointSuffix=core.windows.net"
 
 # Directory database connection string
 az keyvault secret set \
-  --vault-name kv-manimp-prod \
+  --vault-name kv-steelaxis-prod \
   --name DirectoryDbConnectionString \
-  --value "Server=tcp:manimp-sql.database.windows.net,1433;Database=ManimpDirectory;User ID=manimp-admin;Password=<your-password>;Encrypt=True;"
+  --value "Server=tcp:steelaxis-sql.database.windows.net,1433;Database=SteelAxisDirectory;User ID=steelaxis-admin;Password=<your-password>;Encrypt=True;"
 
 # Add more secrets as needed
 ```
@@ -495,11 +495,11 @@ Update `appsettings.json`:
 ```json
 {
   "AzureStorage": {
-    "ConnectionString": "@Microsoft.KeyVault(SecretUri=https://kv-manimp-prod.vault.azure.net/secrets/BlobStorageConnectionString/)",
-    "BlobUri": "https://manimpblob.blob.core.windows.net"
+    "ConnectionString": "@Microsoft.KeyVault(SecretUri=https://kv-steelaxis-prod.vault.azure.net/secrets/BlobStorageConnectionString/)",
+    "BlobUri": "https://steelaxisblob.blob.core.windows.net"
   },
   "ConnectionStrings": {
-    "DirectoryDb": "@Microsoft.KeyVault(SecretUri=https://kv-manimp-prod.vault.azure.net/secrets/DirectoryDbConnectionString/)"
+    "DirectoryDb": "@Microsoft.KeyVault(SecretUri=https://kv-steelaxis-prod.vault.azure.net/secrets/DirectoryDbConnectionString/)"
   }
 }
 ```
@@ -513,22 +513,22 @@ Update `appsettings.json`:
 ```bash
 # Create Application Insights
 az monitor app-insights component create \
-  --app app-manimp-insights \
+  --app app-steelaxis-insights \
   --location eastus \
-  --resource-group rg-manimp-prod \
+  --resource-group rg-steelaxis-prod \
   --application-type web
 
 # Get instrumentation key
 INSTRUMENTATION_KEY=$(az monitor app-insights component show \
-  --app app-manimp-insights \
-  --resource-group rg-manimp-prod \
+  --app app-steelaxis-insights \
+  --resource-group rg-steelaxis-prod \
   --query instrumentationKey \
   --output tsv)
 
 # Configure App Service to use App Insights
 az webapp config appsettings set \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
   --settings APPLICATIONINSIGHTS_CONNECTION_STRING="InstrumentationKey=$INSTRUMENTATION_KEY"
 ```
 
@@ -538,18 +538,18 @@ az webapp config appsettings set \
 # Alert for high error rate
 az monitor metrics alert create \
   --name alert-high-error-rate \
-  --resource-group rg-manimp-prod \
-  --scopes $(az webapp show -g rg-manimp-prod -n app-manimp-prod --query id -o tsv) \
+  --resource-group rg-steelaxis-prod \
+  --scopes $(az webapp show -g rg-steelaxis-prod -n app-steelaxis-prod --query id -o tsv) \
   --condition "avg Http5xx > 10" \
   --window-size 5m \
   --evaluation-frequency 1m \
-  --action email admin@manimp.com
+  --action email admin@steelaxis.com
 
 # Alert for high response time
 az monitor metrics alert create \
   --name alert-slow-response \
-  --resource-group rg-manimp-prod \
-  --scopes $(az webapp show -g rg-manimp-prod -n app-manimp-prod --query id -o tsv) \
+  --resource-group rg-steelaxis-prod \
+  --scopes $(az webapp show -g rg-steelaxis-prod -n app-steelaxis-prod --query id -o tsv) \
   --condition "avg ResponseTime > 3000" \
   --window-size 5m \
   --evaluation-frequency 1m
@@ -564,14 +564,14 @@ az monitor metrics alert create \
 ```bash
 # Enable system-assigned managed identity
 az webapp identity assign \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod
 
 # Grant access to Blob Storage
 az role assignment create \
   --role "Storage Blob Data Contributor" \
   --assignee $SP_ID \
-  --scope $(az storage account show -n manimpblob -g rg-manimp-prod --query id -o tsv)
+  --scope $(az storage account show -n steelaxisblob -g rg-steelaxis-prod --query id -o tsv)
 ```
 
 ### Configure Network Security
@@ -579,15 +579,15 @@ az role assignment create \
 ```bash
 # Restrict access to storage account (optional - production only)
 az storage account update \
-  --resource-group rg-manimp-prod \
-  --name manimpblob \
+  --resource-group rg-steelaxis-prod \
+  --name steelaxisblob \
   --default-action Deny
 
 # Allow access from App Service
 az storage account network-rule add \
-  --resource-group rg-manimp-prod \
-  --account-name manimpblob \
-  --subnet $(az webapp vnet-integration list -g rg-manimp-prod -n app-manimp-prod --query [0].id -o tsv)
+  --resource-group rg-steelaxis-prod \
+  --account-name steelaxisblob \
+  --subnet $(az webapp vnet-integration list -g rg-steelaxis-prod -n app-steelaxis-prod --query [0].id -o tsv)
 ```
 
 ---
@@ -608,14 +608,14 @@ az storage account network-rule add \
 ```bash
 # Scale based on CPU usage
 az monitor autoscale create \
-  --resource-group rg-manimp-prod \
-  --resource $(az appservice plan show -g rg-manimp-prod -n plan-manimp-prod --query id -o tsv) \
+  --resource-group rg-steelaxis-prod \
+  --resource $(az appservice plan show -g rg-steelaxis-prod -n plan-steelaxis-prod --query id -o tsv) \
   --min-count 1 \
   --max-count 3 \
   --count 1
 
 az monitor autoscale rule create \
-  --resource-group rg-manimp-prod \
+  --resource-group rg-steelaxis-prod \
   --autoscale-name autoscale-cpu \
   --condition "Percentage CPU > 70 avg 5m" \
   --scale out 1
@@ -626,13 +626,13 @@ az monitor autoscale rule create \
 ```bash
 # Create budget ($300/month threshold)
 az consumption budget create \
-  --budget-name budget-manimp-prod \
+  --budget-name budget-steelaxis-prod \
   --amount 300 \
   --time-grain Monthly \
   --time-period start=2025-10-01 \
-  --resource-group rg-manimp-prod \
+  --resource-group rg-steelaxis-prod \
   --notifications \
-    email=admin@manimp.com \
+    email=admin@steelaxis.com \
     thresholds=80,90,100
 ```
 
@@ -644,14 +644,14 @@ az consumption budget create \
 
 ```bash
 # Test DNS resolution
-dig @8.8.8.8 acme.manimp.com
-dig @8.8.8.8 acme.files.manimp.com
-dig @8.8.8.8 acme.docs.manimp.com
+dig @8.8.8.8 acme.steelaxis.com
+dig @8.8.8.8 acme.files.steelaxis.com
+dig @8.8.8.8 acme.docs.steelaxis.com
 
 # Check SSL
-curl -I https://acme.manimp.com
-curl -I https://acme.files.manimp.com
-curl -I https://acme.docs.manimp.com
+curl -I https://acme.steelaxis.com
+curl -I https://acme.files.steelaxis.com
+curl -I https://acme.docs.steelaxis.com
 ```
 
 ### App Service Verification
@@ -659,14 +659,14 @@ curl -I https://acme.docs.manimp.com
 ```bash
 # Check app service status
 az webapp show \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
   --query state
 
 # View logs
 az webapp log tail \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod
 ```
 
 ### Blob Storage Verification
@@ -674,16 +674,16 @@ az webapp log tail \
 ```bash
 # List containers
 az storage container list \
-  --account-name manimpblob \
+  --account-name steelaxisblob \
   --account-key $STORAGE_KEY \
   --output table
 
 # Test upload
 echo "test" > test.txt
 az storage blob upload \
-  --account-name manimpblob \
+  --account-name steelaxisblob \
   --account-key $STORAGE_KEY \
-  --container-name manimp-files \
+  --container-name steelaxis-files \
   --name test.txt \
   --file test.txt
 ```
@@ -731,12 +731,12 @@ Save as `setup-azure-infrastructure.sh`:
 #!/bin/bash
 
 # Configuration
-RG="rg-manimp-prod"
+RG="rg-steelaxis-prod"
 LOCATION="eastus"
-DOMAIN="manimp.com"
-APP_NAME="app-manimp-prod"
-STORAGE_NAME="manimpblob"
-KV_NAME="kv-manimp-prod"
+DOMAIN="steelaxis.com"
+APP_NAME="app-steelaxis-prod"
+STORAGE_NAME="steelaxisblob"
+KV_NAME="kv-steelaxis-prod"
 
 # Create resource group
 az group create --name $RG --location $LOCATION
@@ -746,7 +746,7 @@ az network dns zone create --resource-group $RG --name $DOMAIN
 
 # Create App Service Plan
 az appservice plan create \
-  --name plan-manimp-prod \
+  --name plan-steelaxis-prod \
   --resource-group $RG \
   --location $LOCATION \
   --sku P1v3
@@ -755,7 +755,7 @@ az appservice plan create \
 az webapp create \
   --name $APP_NAME \
   --resource-group $RG \
-  --plan plan-manimp-prod \
+  --plan plan-steelaxis-prod \
   --runtime "DOTNET|8.0"
 
 # Create Storage Account
@@ -774,7 +774,7 @@ az keyvault create \
 
 # Create Application Insights
 az monitor app-insights component create \
-  --app app-manimp-insights \
+  --app app-steelaxis-insights \
   --location $LOCATION \
   --resource-group $RG \
   --application-type web

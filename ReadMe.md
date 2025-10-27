@@ -13,7 +13,7 @@ Multi-tenant steel fabrication management system built with Blazor (MudBlazor) w
 
 ## Solution Structure
 
-The solution has been scaffolded with 8 projects following the Manimp architecture pattern:
+The solution is structured with 8 projects following a clean architecture pattern:
 
 ```
 SteelAxis/
@@ -80,85 +80,94 @@ dotnet run
 
 The API will be available at `https://localhost:7001` and the Web application at `https://localhost:7002` (ports may vary based on your configuration).
 
-## What's been accomplished
+## Current Status
 
-### Project Structure
-- Complete .NET 8.0 solution with 8 projects following the Manimp architecture pattern
-- Blazor Server web application with MudBlazor UI components
-- Secured ASP.NET Core Web API with health and data endpoints
-- Entity Framework Core integration with SQL Server
-- xUnit test project with InMemory database support
-- Comprehensive documentation (48,000+ lines in /docs)
+**🚧 INITIAL DEVELOPMENT PHASE - NO FEATURES IMPLEMENTED**
 
-### Identity (CIAM)
-- CIAM tenant: `<your-tenant>.onmicrosoft.com`
-- User flow: `<YOUR_USER_FLOW>` (e.g., `B2C_1_susi` for Sign up and sign in)
-- Any email sign-up enabled via Local accounts (email verification)
-- App registrations in CIAM:
-  - SPA client (SteelAxis.Web): `<YOUR_SPA_CLIENT_ID>`
-  - API resource (SteelAxis.Api): `<YOUR_API_CLIENT_ID>`
-  - Scope exposed: `api://<YOUR_API_CLIENT_ID>/access_as_user`
-- Authority (for apps): `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>`
+### ✅ Completed Setup
+- Complete .NET 8.0 solution structure (8 projects following clean architecture)
+- Blazor Server web application foundation with MudBlazor 8.12.0
+- ASP.NET Core Web API foundation
+- Entity Framework Core integration configured
+- xUnit test project structure
+- Comprehensive development documentation
 
-### Azure resources
-- **App Service (Web)**: `<your-app-service-web>` - Hosts the Blazor web application
-- **App Service (API)**: `<your-app-service-api>` - Hosts the ASP.NET Core API
-- **Key Vault**: `<your-key-vault>` - Stores CIAM configuration and secrets
-  - `AzureAdB2C--Authority` = `https://<your-tenant>.ciamlogin.com/<your-tenant>.onmicrosoft.com/<YOUR_USER_FLOW>`
-  - `AzureAdB2C--ClientId` = `<YOUR_SPA_CLIENT_ID>`
-  - `AzureAdB2C--ApiClientId` = `<YOUR_API_CLIENT_ID>`
-  - `AzureAdB2C--DefaultScopes` = `api://<YOUR_API_CLIENT_ID>/access_as_user`
+### ✅ Authentication (CIAM)
+- Microsoft Entra External ID tenant configured
+- User flow: B2C_1_susi (Sign up and sign in)
+- Email sign-up enabled with verification
+- App registrations completed:
+  - Web client (SteelAxis.Web)
+  - API resource (SteelAxis.Api)
+  - API scope: `api://{client-id}/access_as_user`
 
-### CI/CD (GitHub Actions with Azure OIDC)
-- **Branch**: dev (production deployments from main)
-- **OIDC federated credential subject**: `repo:<your-github-org>/<your-repo>:ref:refs/heads/dev`
-- **Repo secrets required**:
-  - `AZURE_CLIENT_ID` = `<YOUR_MANAGED_IDENTITY_CLIENT_ID>` (the managed identity/service principal client ID for OIDC)
-  - `AZURE_TENANT_ID` = `<YOUR_TENANT_ID>`
-  - `AZURE_SUBSCRIPTION_ID` = `<YOUR_SUBSCRIPTION_ID>`
-- **Workflows added**:
-  - `.github/workflows/deploy-api-dev.yml` — Builds and deploys SteelAxis.Api* to `<your-app-service-api>`
-  - `.github/workflows/deploy-web-dev.yml` — Builds and deploys SteelAxis.Web* to `<your-app-service-web>`
-  - `.github/workflows/ci-dev.yml` — dotnet format, build (warnings as errors), tests, Trivy FS scan with SARIF upload
-  - `.github/workflows/codeql-csharp-dev.yml` — CodeQL for C#
-  - `.github/dependabot.yml` — Weekly NuGet (root) and npm (/web) updates
-- **PR reference**: #1 Add GitHub Actions CI/CD with Azure OIDC for dev branch
+### ✅ Azure Infrastructure
+- **App Service (Web)**: `steelaxis-dev` - Blazor web application
+- **App Service (API)**: `steelaxis-dev-api` - ASP.NET Core API
+- **Key Vault**: `kv-Steelaxis-dev` - Stores authentication secrets
+- **SQL Server**: Configured with elastic pool
+- **GitHub Actions CI/CD**: Automated deployment pipelines
 
-### Security and quality
-- Trivy filesystem scan (CRITICAL, HIGH) with upload to GitHub code scanning
-- CodeQL static analysis for C#
-- dotnet format enforced, build warnings treated as errors
-- Dependabot weekly updates for NuGet and npm
-- Azure Key Vault integration for secrets management
-- Microsoft Entra External ID (CIAM) authentication
+### ❌ Not Yet Implemented
+- **No business features** - EN 1090 compliance, material management, etc.
+- **No database models** - Beyond base entity classes
+- **No service layer** - Business logic services not created
+- **No API controllers** - Except health check endpoint
+- **No UI components** - Beyond authentication pages
 
-### Copilot for pull requests
-- Enable in repository settings:
-  - Code review with GitHub Copilot
-  - Pull request summaries
-  - (Optional) Autofix with GitHub Copilot
+**SteelAxis is ready for feature development to begin.**
 
-## Repository layout
+---
+
+## Next Steps
+
+Ready to start implementing features following the established patterns:
+
+1. **Review Development Guidelines**
+   - See `.github/copilot-instructions.md` for complete workflow
+   - Understand API-first development approach
+   - Follow standardized component patterns
+
+2. **Implement EN 1090 Foundation**
+   - Material certificate management
+   - Material traceability system
+   - Document management
+
+3. **Build Quality Management**
+   - Non-Conformance Reports (NCR)
+   - Corrective Action Requests (CAR)
+   - Quality control workflows
+
+See `docs/README.md` for complete documentation and implementation order.
+
+---
+
+## Repository Layout
 
 The solution follows a standard .NET multi-project structure:
 
 ```
 SteelAxis/
 ├── .github/
-│   └── workflows/           # CI/CD pipeline definitions
-├── docs/                    # Comprehensive documentation
-│   ├── authentication/      # CIAM and Entra setup guides
-│   ├── azure-infrastructure/ # Azure deployment guides
-│   ├── customer-portal/     # Customer portal documentation
-│   └── en-1090-compliance/  # EN-1090 compliance specs
-├── SteelAxis.Api/          # ASP.NET Core Web API
-├── SteelAxis.Auth/         # Authentication models
-├── SteelAxis.Data/         # EF Core DbContext
-├── SteelAxis.Directory/    # Directory service
-├── SteelAxis.Services/     # Business logic layer
+│   ├── workflows/           # CI/CD pipeline definitions
+│   ├── copilot-instructions.md      # Primary development guidelines
+│   ├── copilot-ui-instructions.md   # UI component standards
+│   └── copilot-model-instructions.md # Entity model patterns
+├── docs/                    # Complete documentation
+│   ├── DOCUMENTATION-TEMPLATE.md    # Feature documentation templates
+│   ├── README.md                    # Documentation index
+│   ├── authentication/              # Authentication setup guides
+│   ├── azure-infrastructure/        # Azure deployment guides
+│   ├── en-1090-compliance/          # EN 1090 specifications
+│   └── mudblazor/                   # MudBlazor component reference
+├── SteelAxis.Api/          # ASP.NET Core Web API (controllers, endpoints)
+├── SteelAxis.Auth/         # Authentication models (ApplicationUser)
+├── SteelAxis.Data/         # EF Core DbContext (tenant databases)
+├── SteelAxis.Directory/    # Directory service (central tenant management)
+├── SteelAxis.Services/     # Business logic layer (to be implemented)
 ├── SteelAxis.Shared/       # Common models and interfaces
 ├── SteelAxis.Tests/        # xUnit test project
-├── SteelAxis.Web/          # Blazor Server UI
+├── SteelAxis.Web/          # Blazor Server UI application
 └── SteelAxis.sln           # Solution file
 ```
 
@@ -272,7 +281,7 @@ For detailed setup instructions, see [AUTHENTICATION_QUICKSTART.md](AUTHENTICATI
 
 ### Latest updates
 - **#4**: Merged working branch into dev - Added complete .NET 8.0 solution structure with 8 projects
-  - Scaffolded all projects following Manimp architecture pattern
+  - Scaffolded all projects following clean architecture pattern
   - Added comprehensive documentation (48K+ lines)
   - Integrated Blazor Server with MudBlazor UI
   - Set up xUnit test framework

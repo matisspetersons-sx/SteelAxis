@@ -13,7 +13,7 @@ Domain Registrar (GoDaddy/Namecheap)
          ↓
 ┌─────────────────────────────────┐
 │     Azure DNS Zone              │
-│     Zone: manimp.com            │
+│     Zone: steelaxis.com            │
 ├─────────────────────────────────┤
 │ Name Servers:                   │
 │  ns1-01.azure-dns.com          │
@@ -30,8 +30,8 @@ Domain Registrar (GoDaddy/Namecheap)
 │ Type         │ Name         │ Value                         │
 ├──────────────┼──────────────┼───────────────────────────────┤
 │ A            │ *            │ 20.94.123.45 (App IP)         │
-│ CNAME        │ *.files      │ app-manimp-prod.azure...net   │
-│ CNAME        │ *.docs       │ app-manimp-prod.azure...net   │
+│ CNAME        │ *.files      │ app-steelaxis-prod.azure...net   │
+│ CNAME        │ *.docs       │ app-steelaxis-prod.azure...net   │
 │ TXT          │ asuid        │ <verification-code>           │
 └──────────────┴──────────────┴───────────────────────────────┘
          │
@@ -39,17 +39,17 @@ Domain Registrar (GoDaddy/Namecheap)
          ↓
 ┌─────────────────────────────────────────────────────────────┐
 │              Azure App Service (P1v3)                        │
-│              app-manimp-prod.azurewebsites.net              │
+│              app-steelaxis-prod.azurewebsites.net              │
 ├─────────────────────────────────────────────────────────────┤
 │ Custom Domains:                                             │
-│  ✅ *.manimp.com                                            │
-│  ✅ *.files.manimp.com                                      │
-│  ✅ *.docs.manimp.com                                       │
+│  ✅ *.steelaxis.com                                            │
+│  ✅ *.files.steelaxis.com                                      │
+│  ✅ *.docs.steelaxis.com                                       │
 ├─────────────────────────────────────────────────────────────┤
 │ SSL Certificates:                                           │
-│  ✅ Managed Certificate (*.manimp.com)                      │
-│  ✅ Managed Certificate (*.files.manimp.com)                │
-│  ✅ Managed Certificate (*.docs.manimp.com)                 │
+│  ✅ Managed Certificate (*.steelaxis.com)                      │
+│  ✅ Managed Certificate (*.files.steelaxis.com)                │
+│  ✅ Managed Certificate (*.docs.steelaxis.com)                 │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -62,21 +62,21 @@ Domain Registrar (GoDaddy/Namecheap)
 ```bash
 # Via Azure CLI
 az network dns zone create \
-  --resource-group rg-manimp-prod \
-  --name manimp.com
+  --resource-group rg-steelaxis-prod \
+  --name steelaxis.com
 
 # Get name servers
 az network dns zone show \
-  --resource-group rg-manimp-prod \
-  --name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --name steelaxis.com \
   --query nameServers
 ```
 
 **Via Azure Portal:**
 1. Search "DNS zones" in Azure Portal
 2. Click "+ Create"
-3. Resource Group: `rg-manimp-prod`
-4. Name: `manimp.com`
+3. Resource Group: `rg-steelaxis-prod`
+4. Name: `steelaxis.com`
 5. Click "Review + Create"
 6. Copy the 4 name servers shown
 
@@ -87,7 +87,7 @@ az network dns zone show \
 #### GoDaddy
 ```
 1. Login to GoDaddy
-2. My Products → Domains → manimp.com → Manage
+2. My Products → Domains → steelaxis.com → Manage
 3. Scroll to "Nameservers" → Click "Change"
 4. Select "I'll use my own nameservers"
 5. Add 4 Azure DNS name servers:
@@ -101,7 +101,7 @@ az network dns zone show \
 #### Namecheap
 ```
 1. Login to Namecheap
-2. Domain List → manimp.com → Manage
+2. Domain List → steelaxis.com → Manage
 3. Domain tab → Nameservers dropdown
 4. Select "Custom DNS"
 5. Add Azure DNS name servers
@@ -124,8 +124,8 @@ az network dns zone show \
 ```bash
 # Get outbound IPs
 az webapp show \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
   --query outboundIpAddresses \
   --output tsv
 
@@ -138,32 +138,32 @@ az webapp show \
 ```bash
 # Main app (A record)
 az network dns record-set a add-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "*" \
   --ipv4-address 20.94.123.45 \
   --ttl 3600
 
 # File portal (CNAME)
 az network dns record-set cname set-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "*.files" \
-  --cname app-manimp-prod.azurewebsites.net \
+  --cname app-steelaxis-prod.azurewebsites.net \
   --ttl 3600
 
 # Client portal (CNAME)
 az network dns record-set cname set-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "*.docs" \
-  --cname app-manimp-prod.azurewebsites.net \
+  --cname app-steelaxis-prod.azurewebsites.net \
   --ttl 3600
 
 # Verification TXT record
 az network dns record-set txt add-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "asuid" \
   --value "YOUR_VERIFICATION_CODE"
 ```
@@ -179,11 +179,11 @@ az network dns record-set txt add-record \
    - **File Portal:**
      - Name: `*.files`
      - Type: `CNAME`
-     - Alias: `app-manimp-prod.azurewebsites.net`
+     - Alias: `app-steelaxis-prod.azurewebsites.net`
    - **Client Portal:**
      - Name: `*.docs`
      - Type: `CNAME`
-     - Alias: `app-manimp-prod.azurewebsites.net`
+     - Alias: `app-steelaxis-prod.azurewebsites.net`
 
 ---
 
@@ -193,18 +193,18 @@ az network dns record-set txt add-record \
 
 ```bash
 # Test with Azure DNS directly
-nslookup acme.manimp.com ns1-01.azure-dns.com
-nslookup acme.files.manimp.com ns1-01.azure-dns.com
-nslookup acme.docs.manimp.com ns1-01.azure-dns.com
+nslookup acme.steelaxis.com ns1-01.azure-dns.com
+nslookup acme.files.steelaxis.com ns1-01.azure-dns.com
+nslookup acme.docs.steelaxis.com ns1-01.azure-dns.com
 
 # Test with Google DNS
-nslookup acme.manimp.com 8.8.8.8
-dig @8.8.8.8 acme.files.manimp.com
-dig @8.8.8.8 acme.docs.manimp.com
+nslookup acme.steelaxis.com 8.8.8.8
+dig @8.8.8.8 acme.files.steelaxis.com
+dig @8.8.8.8 acme.docs.steelaxis.com
 
 # Check propagation globally
 # Visit: https://www.whatsmydns.net
-# Enter: acme.manimp.com
+# Enter: acme.steelaxis.com
 ```
 
 #### Monitor Propagation Status
@@ -214,10 +214,10 @@ dig @8.8.8.8 acme.docs.manimp.com
 brew install bind
 
 # Check TTL countdown
-dig +trace acme.manimp.com
+dig +trace acme.steelaxis.com
 
 # Check all DNS record types
-dig acme.manimp.com ANY
+dig acme.steelaxis.com ANY
 ```
 
 ---
@@ -237,11 +237,11 @@ dig acme.manimp.com ANY
 1. App Service → Certificates
 2. Click "Add Certificate"
 3. Source: "Create App Service Managed Certificate"
-4. Custom Domain: Select "*.manimp.com"
+4. Custom Domain: Select "*.steelaxis.com"
 5. Validation Method: HTTP (automatic)
 6. Click "Validate"
 7. Click "Add"
-8. Repeat for "*.files.manimp.com" and "*.docs.manimp.com"
+8. Repeat for "*.files.steelaxis.com" and "*.docs.steelaxis.com"
 
 Wait 10-15 minutes for certificate issuance
 ```
@@ -250,7 +250,7 @@ Wait 10-15 minutes for certificate issuance
 
 ```
 1. App Service → Custom domains
-2. Select "acme.manimp.com"
+2. Select "acme.steelaxis.com"
 3. TLS/SSL binding → Add binding
 4. Certificate: Select managed certificate
 5. TLS/SSL Type: SNI SSL
@@ -270,20 +270,20 @@ brew install certbot
 sudo certbot certonly \
   --manual \
   --preferred-challenges dns \
-  -d "*.manimp.com" \
-  -d "*.files.manimp.com" \
-  -d "*.docs.manimp.com" \
+  -d "*.steelaxis.com" \
+  -d "*.files.steelaxis.com" \
+  -d "*.docs.steelaxis.com" \
   --agree-tos \
-  --email admin@manimp.com
+  --email admin@steelaxis.com
 
 # Follow instructions to add TXT records
 # Example:
-# _acme-challenge.manimp.com → "abc123xyz456..."
+# _acme-challenge.steelaxis.com → "abc123xyz456..."
 
 # Add TXT record to Azure DNS
 az network dns record-set txt add-record \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --record-set-name "_acme-challenge" \
   --value "abc123xyz456..."
 
@@ -291,21 +291,21 @@ az network dns record-set txt add-record \
 # Press Enter in certbot to continue
 
 # Certificate saved to:
-# /etc/letsencrypt/live/manimp.com/fullchain.pem
-# /etc/letsencrypt/live/manimp.com/privkey.pem
+# /etc/letsencrypt/live/steelaxis.com/fullchain.pem
+# /etc/letsencrypt/live/steelaxis.com/privkey.pem
 
 # Convert to PFX for Azure
 sudo openssl pkcs12 -export \
-  -out wildcard-manimp.pfx \
-  -inkey /etc/letsencrypt/live/manimp.com/privkey.pem \
-  -in /etc/letsencrypt/live/manimp.com/fullchain.pem \
+  -out wildcard-steelaxis.pfx \
+  -inkey /etc/letsencrypt/live/steelaxis.com/privkey.pem \
+  -in /etc/letsencrypt/live/steelaxis.com/fullchain.pem \
   -password pass:YourPassword123
 
 # Upload to App Service
 az webapp config ssl upload \
-  --resource-group rg-manimp-prod \
-  --name app-manimp-prod \
-  --certificate-file wildcard-manimp.pfx \
+  --resource-group rg-steelaxis-prod \
+  --name app-steelaxis-prod \
+  --certificate-file wildcard-steelaxis.pfx \
   --certificate-password YourPassword123
 ```
 
@@ -318,15 +318,15 @@ az webapp config ssl upload \
 - [ ] Azure DNS zone created
 - [ ] Domain registrar name servers updated
 - [ ] DNS propagation complete (24-48 hours)
-- [ ] A record for `*.manimp.com` resolves
-- [ ] CNAME for `*.files.manimp.com` resolves
-- [ ] CNAME for `*.docs.manimp.com` resolves
+- [ ] A record for `*.steelaxis.com` resolves
+- [ ] CNAME for `*.files.steelaxis.com` resolves
+- [ ] CNAME for `*.docs.steelaxis.com` resolves
 
 **Test Commands:**
 ```bash
-nslookup acme.manimp.com
-nslookup acme.files.manimp.com
-nslookup acme.docs.manimp.com
+nslookup acme.steelaxis.com
+nslookup acme.files.steelaxis.com
+nslookup acme.docs.steelaxis.com
 ```
 
 ### SSL Checks
@@ -339,12 +339,12 @@ nslookup acme.docs.manimp.com
 
 **Test Commands:**
 ```bash
-curl -I https://acme.manimp.com
-curl -I https://acme.files.manimp.com
-curl -I https://acme.docs.manimp.com
+curl -I https://acme.steelaxis.com
+curl -I https://acme.files.steelaxis.com
+curl -I https://acme.docs.steelaxis.com
 
 # Check certificate details
-openssl s_client -connect acme.manimp.com:443 -servername acme.manimp.com
+openssl s_client -connect acme.steelaxis.com:443 -servername acme.steelaxis.com
 ```
 
 ### App Service Checks
@@ -358,9 +358,9 @@ openssl s_client -connect acme.manimp.com:443 -servername acme.manimp.com
 
 **Test Commands:**
 ```bash
-curl https://acme.manimp.com/health
-curl https://acme.files.manimp.com/health
-curl https://acme.docs.manimp.com/health
+curl https://acme.steelaxis.com/health
+curl https://acme.files.steelaxis.com/health
+curl https://acme.docs.steelaxis.com/health
 ```
 
 ---
@@ -369,12 +369,12 @@ curl https://acme.docs.manimp.com/health
 
 ### DNS Not Resolving
 
-**Problem:** `nslookup acme.manimp.com` returns NXDOMAIN
+**Problem:** `nslookup acme.steelaxis.com` returns NXDOMAIN
 
 **Solutions:**
 ```bash
 # Check name servers updated at registrar
-dig manimp.com NS
+dig steelaxis.com NS
 
 # Expected output should show Azure DNS:
 # ns1-01.azure-dns.com
@@ -395,34 +395,34 @@ dig manimp.com NS
 
 # 2. Check TXT record for verification
 az network dns record-set txt show \
-  --resource-group rg-manimp-prod \
-  --zone-name manimp.com \
+  --resource-group rg-steelaxis-prod \
+  --zone-name steelaxis.com \
   --name asuid
 
 # 3. Verify custom domain in App Service
 az webapp config hostname list \
-  --resource-group rg-manimp-prod \
-  --webapp-name app-manimp-prod
+  --resource-group rg-steelaxis-prod \
+  --webapp-name app-steelaxis-prod
 
 # 4. Retry certificate creation
 ```
 
 ### Wildcard Domain Not Working
 
-**Problem:** `acme.manimp.com` doesn't resolve
+**Problem:** `acme.steelaxis.com` doesn't resolve
 
 **Solutions:**
 ```bash
 # 1. Check App Service Plan tier (needs Standard or higher)
 az appservice plan show \
-  --resource-group rg-manimp-prod \
-  --name plan-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name plan-steelaxis-prod \
   --query sku.tier
 
 # 2. If Basic tier, upgrade to Standard
 az appservice plan update \
-  --resource-group rg-manimp-prod \
-  --name plan-manimp-prod \
+  --resource-group rg-steelaxis-prod \
+  --name plan-steelaxis-prod \
   --sku S1
 ```
 
@@ -454,27 +454,27 @@ Compared to:
 | Record Type | Name | Value | TTL | Purpose |
 |-------------|------|-------|-----|---------|
 | **A** | `*` | `20.94.123.45` | 3600 | Main app wildcard |
-| **CNAME** | `*.files` | `app-manimp-prod.azurewebsites.net` | 3600 | File portal wildcard |
-| **CNAME** | `*.docs` | `app-manimp-prod.azurewebsites.net` | 3600 | Client portal wildcard |
+| **CNAME** | `*.files` | `app-steelaxis-prod.azurewebsites.net` | 3600 | File portal wildcard |
+| **CNAME** | `*.docs` | `app-steelaxis-prod.azurewebsites.net` | 3600 | Client portal wildcard |
 | **TXT** | `asuid` | `<verification-code>` | 3600 | Domain verification |
 | **TXT** | `_acme-challenge` | `<lets-encrypt-token>` | 300 | SSL validation (if using Let's Encrypt) |
 
 ### Example Resolutions
 
 ```
-acme.manimp.com
-  ↓ Matches: *.manimp.com (A record)
+acme.steelaxis.com
+  ↓ Matches: *.steelaxis.com (A record)
   ↓ Returns: 20.94.123.45
   ↓ Connects to: App Service
 
-metals-inc.files.manimp.com
-  ↓ Matches: *.files.manimp.com (CNAME)
-  ↓ Returns: app-manimp-prod.azurewebsites.net
+metals-inc.files.steelaxis.com
+  ↓ Matches: *.files.steelaxis.com (CNAME)
+  ↓ Returns: app-steelaxis-prod.azurewebsites.net
   ↓ Connects to: App Service
 
-buildco.docs.manimp.com
-  ↓ Matches: *.docs.manimp.com (CNAME)
-  ↓ Returns: app-manimp-prod.azurewebsites.net
+buildco.docs.steelaxis.com
+  ↓ Matches: *.docs.steelaxis.com (CNAME)
+  ↓ Returns: app-steelaxis-prod.azurewebsites.net
   ↓ Connects to: App Service
 ```
 

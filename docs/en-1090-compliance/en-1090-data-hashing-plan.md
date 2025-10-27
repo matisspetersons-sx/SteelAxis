@@ -860,7 +860,7 @@ public async Task<bool> VerifyHashChainIntegrity(string entityType)
 
 **1. IHashingService Interface**
 ```csharp
-namespace Manimp.Services.Interfaces;
+namespace SteelAxis.Services.Interfaces;
 
 public interface IHashingService
 {
@@ -1454,8 +1454,8 @@ public async Task<IActionResult> ExportMaterialCertificates(
 5. Unit tests for hashing service
 
 **Deliverables**:
-- `Manimp.Services/Implementation/HashingService.cs`
-- `Manimp.Services/Implementation/EN1090HashingService.cs`
+- `SteelAxis.Services/Implementation/HashingService.cs`
+- `SteelAxis.Services/Implementation/EN1090HashingService.cs`
 - Database migration: `AddHashFieldsToEN1090Tables`
 - Unit tests: 100% coverage of hashing service
 
@@ -1736,7 +1736,7 @@ public async Task AnonymizeWelderData(string welderId)
 
 ## Conclusion
 
-This hashing implementation plan provides a comprehensive, phased approach to securing sensitive EN 1090 compliance data. By carefully classifying data, implementing industry-standard cryptographic techniques, and maintaining audit compatibility, Manimp will protect proprietary information while meeting all regulatory requirements.
+This hashing implementation plan provides a comprehensive, phased approach to securing sensitive EN 1090 compliance data. By carefully classifying data, implementing industry-standard cryptographic techniques, and maintaining audit compatibility, SteelAxis will protect proprietary information while meeting all regulatory requirements.
 
 ### Key Success Metrics
 - **Security**: 100% of proprietary data hashed or access-controlled
