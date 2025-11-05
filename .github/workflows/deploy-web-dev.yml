@@ -1,0 +1,76 @@
+name: Deploy Web (dev, OIDC)
+
+on:
+  push:
+    branches: [ "dev" ]
+    paths:
+      - "**/*.cs"
+      - "**/*.csproj"
+      - "**/*.sln"
+      - ".github/workflows/deploy-web-dev.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-web-dev
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Locate Web project (SteelAxis.Web*)
+        id: find
+        shell: bash
+        run: |
+          set -euo pipefail
+          WEB_CSPROJ=$(git ls-files \
+            "*SteelAxis.Web*.csproj" \
+            "web/*.csproj" \
+            "src/**/SteelAxis.Web*.csproj" \
+            | head -n1)
+          if [[ -z "${WEB_CSPROJ}" ]]; then
+            echo "::error::Could not find Web project (SteelAxis.Web). Ensure a *SteelAxis.Web*.csproj exists.";
+            exit 1
+          fi
+          WEB_DIR=$(dirname "$WEB_CSPROJ")
+          echo "web_csproj=$WEB_CSPROJ" >> "$GITHUB_OUTPUT"
+          echo "web_dir=$WEB_DIR" >> "$GITHUB_OUTPUT"
+          echo "Found Web project at: $WEB_CSPROJ"
+
+      - name: Restore
+        run: |
+          dotnet restore "${{ steps.find.outputs.web_csproj }}"
+
+      - name: Build (warnings as errors)
+        run: |
+          dotnet build "${{ steps.find.outputs.web_csproj }}" -c Release --no-restore -warnaserror
+
+      - name: Publish Web
+        run: |
+          dotnet publish "${{ steps.find.outputs.web_csproj }}" -c Release -o ./out/web --no-build
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to steelaxis-dev
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: steelaxis-dev
+          package: ./out/web
