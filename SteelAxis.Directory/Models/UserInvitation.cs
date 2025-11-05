@@ -124,7 +124,7 @@ public class UserInvitation
     /// Whether the invitation is still valid
     /// </summary>
     [NotMapped]
-    public bool IsValid => Status == InvitationStatus.Pending 
+    public bool IsValid => Status == InvitationStatus.Pending
                            && ExpiresAt > DateTime.UtcNow;
 
     /// <summary>
@@ -162,11 +162,11 @@ public static class InvitationStatus
     /// <summary>
     /// All available statuses
     /// </summary>
-    public static readonly string[] AllStatuses = 
-    { 
-        Pending, 
-        Accepted, 
-        Expired, 
-        Cancelled 
+    public static readonly string[] AllStatuses =
+    {
+        Pending,
+        Accepted,
+        Expired,
+        Cancelled
     };
 }

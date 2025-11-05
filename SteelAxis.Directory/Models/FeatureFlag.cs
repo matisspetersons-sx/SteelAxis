@@ -87,7 +87,7 @@ public static class FeatureNames
     /// <summary>
     /// All available features
     /// </summary>
-    public static readonly string[] AllFeatures = 
+    public static readonly string[] AllFeatures =
     {
         ProjectManagement,
         BasicInventory,
@@ -118,8 +118,8 @@ public static class FeatureNames
             BasicReporting
         };
 
-        if (tier == SubscriptionTiers.Professional || 
-            tier == SubscriptionTiers.Enterprise || 
+        if (tier == SubscriptionTiers.Professional ||
+            tier == SubscriptionTiers.Enterprise ||
             tier == SubscriptionTiers.Custom)
         {
             features.AddRange(new[]
@@ -131,7 +131,7 @@ public static class FeatureNames
             });
         }
 
-        if (tier == SubscriptionTiers.Enterprise || 
+        if (tier == SubscriptionTiers.Enterprise ||
             tier == SubscriptionTiers.Custom)
         {
             features.AddRange(new[]

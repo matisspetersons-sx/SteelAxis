@@ -58,7 +58,7 @@ public class InvitationHttpService : IInvitationHttpService
         {
             var response = await _httpClient.GetAsync("api/invitations");
             response.EnsureSuccessStatusCode();
-            
+
             return await response.Content.ReadFromJsonAsync<List<InvitationDto>>() ?? new List<InvitationDto>();
         }
         catch (Exception ex)
@@ -73,7 +73,7 @@ public class InvitationHttpService : IInvitationHttpService
         try
         {
             var response = await _httpClient.GetAsync($"api/invitations/{id}");
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 return null;
@@ -93,7 +93,7 @@ public class InvitationHttpService : IInvitationHttpService
         try
         {
             var response = await _httpClient.GetAsync($"api/invitations/token/{token}");
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 return null;
@@ -113,7 +113,7 @@ public class InvitationHttpService : IInvitationHttpService
         try
         {
             var response = await _httpClient.PostAsJsonAsync("api/invitations/accept", request);
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to accept invitation. Status: {StatusCode}", response.StatusCode);

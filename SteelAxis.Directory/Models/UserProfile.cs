@@ -145,23 +145,23 @@ public static class UserRoles
     /// <summary>
     /// All available roles
     /// </summary>
-    public static readonly string[] AllRoles = 
-    { 
-        Admin, 
-        UpperManagement, 
-        LowerManagement, 
-        Supervisor, 
-        ShopfloorWorker, 
-        OfficeWorker 
+    public static readonly string[] AllRoles =
+    {
+        Admin,
+        UpperManagement,
+        LowerManagement,
+        Supervisor,
+        ShopfloorWorker,
+        OfficeWorker
     };
 
     /// <summary>
     /// Roles that can manage users
     /// </summary>
-    public static readonly string[] ManagementRoles = 
-    { 
-        Admin, 
-        UpperManagement, 
-        LowerManagement 
+    public static readonly string[] ManagementRoles =
+    {
+        Admin,
+        UpperManagement,
+        LowerManagement
     };
 }

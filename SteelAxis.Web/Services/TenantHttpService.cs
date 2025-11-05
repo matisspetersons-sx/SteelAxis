@@ -63,7 +63,7 @@ public class TenantHttpService : ITenantHttpService
         try
         {
             var response = await _httpClient.GetAsync("api/tenants/current");
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to get current tenant. Status: {StatusCode}", response.StatusCode);
@@ -84,7 +84,7 @@ public class TenantHttpService : ITenantHttpService
         try
         {
             var response = await _httpClient.GetAsync("api/tenants/current/features");
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to get tenant with features. Status: {StatusCode}", response.StatusCode);
@@ -106,7 +106,7 @@ public class TenantHttpService : ITenantHttpService
         {
             var response = await _httpClient.GetAsync("api/tenants");
             response.EnsureSuccessStatusCode();
-            
+
             return await response.Content.ReadFromJsonAsync<List<TenantDto>>() ?? new List<TenantDto>();
         }
         catch (Exception ex)
@@ -121,7 +121,7 @@ public class TenantHttpService : ITenantHttpService
         try
         {
             var response = await _httpClient.GetAsync($"api/tenants/{id}");
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 return null;
@@ -141,7 +141,7 @@ public class TenantHttpService : ITenantHttpService
         try
         {
             var response = await _httpClient.PutAsJsonAsync($"api/tenants/{id}", request);
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to update tenant {TenantId}. Status: {StatusCode}", id, response.StatusCode);

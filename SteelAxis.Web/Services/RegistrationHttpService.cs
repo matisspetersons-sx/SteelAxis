@@ -32,15 +32,15 @@ public class RegistrationHttpService : IRegistrationHttpService
         try
         {
             var response = await _httpClient.PostAsJsonAsync("api/registration/register", request);
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to register tenant. Status: {StatusCode}", response.StatusCode);
-                
+
                 // Try to read error message from response
                 var errorContent = await response.Content.ReadAsStringAsync();
                 _logger.LogWarning("Registration error details: {ErrorContent}", errorContent);
-                
+
                 return null;
             }
 

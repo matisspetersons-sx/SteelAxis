@@ -58,7 +58,7 @@ public class FeatureFlagHttpService : IFeatureFlagHttpService
         {
             var response = await _httpClient.GetAsync("api/features");
             response.EnsureSuccessStatusCode();
-            
+
             return await response.Content.ReadFromJsonAsync<List<FeatureFlagDto>>() ?? new List<FeatureFlagDto>();
         }
         catch (Exception ex)
@@ -73,7 +73,7 @@ public class FeatureFlagHttpService : IFeatureFlagHttpService
         try
         {
             var response = await _httpClient.GetAsync($"api/features/{featureKey}/enabled");
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 return false;
@@ -95,7 +95,7 @@ public class FeatureFlagHttpService : IFeatureFlagHttpService
         {
             var response = await _httpClient.GetAsync("api/features/all");
             response.EnsureSuccessStatusCode();
-            
+
             return await response.Content.ReadFromJsonAsync<List<FeatureFlagDto>>() ?? new List<FeatureFlagDto>();
         }
         catch (Exception ex)
@@ -110,7 +110,7 @@ public class FeatureFlagHttpService : IFeatureFlagHttpService
         try
         {
             var response = await _httpClient.PostAsJsonAsync("api/features", request);
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to create feature. Status: {StatusCode}", response.StatusCode);
@@ -131,7 +131,7 @@ public class FeatureFlagHttpService : IFeatureFlagHttpService
         try
         {
             var response = await _httpClient.PutAsJsonAsync($"api/features/{id}", request);
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to update feature {FeatureId}. Status: {StatusCode}", id, response.StatusCode);
