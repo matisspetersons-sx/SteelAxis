@@ -120,7 +120,9 @@ public class RegistrationController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error checking domain availability for {Domain}", domain);
+            // Sanitize domain for logging to prevent log forging
+            var safeDomain = System.Text.RegularExpressions.Regex.Replace(domain ?? "", @"[^\w-]", "");
+            _logger.LogError(ex, "Error checking domain availability for {Domain}", safeDomain);
             return Task.FromResult<ActionResult<object>>(StatusCode(500, "An error occurred while checking domain availability"));
         }
     }
