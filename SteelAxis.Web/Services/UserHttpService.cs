@@ -53,7 +53,7 @@ public class UserHttpService : IUserHttpService
         {
             var response = await _httpClient.GetAsync("api/users");
             response.EnsureSuccessStatusCode();
-            
+
             return await response.Content.ReadFromJsonAsync<List<UserProfileDto>>() ?? new List<UserProfileDto>();
         }
         catch (Exception ex)
@@ -68,7 +68,7 @@ public class UserHttpService : IUserHttpService
         try
         {
             var response = await _httpClient.GetAsync($"api/users/{id}");
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 return null;
@@ -88,7 +88,7 @@ public class UserHttpService : IUserHttpService
         try
         {
             var response = await _httpClient.PostAsJsonAsync("api/users/invite", request);
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to invite user. Status: {StatusCode}", response.StatusCode);
@@ -109,7 +109,7 @@ public class UserHttpService : IUserHttpService
         try
         {
             var response = await _httpClient.PutAsJsonAsync($"api/users/{id}", request);
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to update user {UserId}. Status: {StatusCode}", id, response.StatusCode);

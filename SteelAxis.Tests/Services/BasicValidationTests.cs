@@ -12,10 +12,10 @@ public class BasicValidationTests
     {
         // Arrange
         var expected = 42;
-        
+
         // Act
         var actual = 40 + 2;
-        
+
         // Assert
         Assert.Equal(expected, actual);
     }
@@ -29,7 +29,7 @@ public class BasicValidationTests
     {
         // Arrange
         var validTiers = new[] { "Free", "Basic", "Professional", "Enterprise" };
-        
+
         // Act & Assert
         Assert.Contains(tier, validTiers);
     }
@@ -42,7 +42,7 @@ public class BasicValidationTests
     {
         // Arrange
         var validRoles = new[] { "Admin", "Manager", "User" };
-        
+
         // Act & Assert
         Assert.Contains(role, validRoles);
     }

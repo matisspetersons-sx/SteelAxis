@@ -32,7 +32,7 @@ public class ProfileHttpService : IProfileHttpService
         try
         {
             var response = await _httpClient.GetAsync("api/profile/me");
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to get current user profile. Status: {StatusCode}", response.StatusCode);

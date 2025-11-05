@@ -73,8 +73,8 @@ public class UserManagementService : IUserManagementService
 
             // Check for pending invitation
             var pendingInvitation = await _context.UserInvitations
-                .FirstOrDefaultAsync(i => i.TenantId == tenantId 
-                                          && i.Email == request.Email 
+                .FirstOrDefaultAsync(i => i.TenantId == tenantId
+                                          && i.Email == request.Email
                                           && i.Status == InvitationStatus.Pending);
 
             if (pendingInvitation != null)
@@ -237,7 +237,7 @@ public class UserManagementService : IUserManagementService
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("User {EntraUserId} accepted invitation to tenant {TenantId}", 
+            _logger.LogInformation("User {EntraUserId} accepted invitation to tenant {TenantId}",
                 request.EntraUserId, invitation.TenantId);
 
             return new AcceptInvitationResponse

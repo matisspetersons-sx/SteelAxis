@@ -124,7 +124,7 @@ public class TenantService : ITenantService
         // TODO: In production, this should retrieve from Azure Key Vault
         // The ConnectionString field in DB should store the Key Vault secret name, not the actual connection string
         // Example: "kv-secret:steelaxis-tenant-{tenantId}-connectionstring"
-        
+
         // For now, return the stored value (will be updated when Key Vault integration is added)
         // SECURITY NOTE: This is temporary - production MUST use Key Vault
         return tenant.ConnectionString;

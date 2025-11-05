@@ -233,7 +233,7 @@ public class TenantManagementService : ITenantManagementService
     }
 
     /// <inheritdoc />
-    public async Task<string> CreateTenantDatabaseAsync(Guid tenantId, string tenantName)
+    public Task<string> CreateTenantDatabaseAsync(Guid tenantId, string tenantName)
     {
         try
         {
@@ -265,7 +265,7 @@ public class TenantManagementService : ITenantManagementService
 
             // TODO: Store in Azure Key Vault and return secret reference
             // Example: return $"kv-secret:steelaxis-tenant-{tenantId}-connectionstring";
-            return tenantConnectionString;
+            return Task.FromResult(tenantConnectionString);
         }
         catch (Exception ex)
         {

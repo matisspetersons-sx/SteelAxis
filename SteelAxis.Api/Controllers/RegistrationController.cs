@@ -55,13 +55,13 @@ public class RegistrationController : ControllerBase
                 return Unauthorized("User authentication is invalid");
             }
 
-            _logger.LogInformation("Starting admin registration for user {EntraUserId}, company {CompanyName}", 
+            _logger.LogInformation("Starting admin registration for user {EntraUserId}, company {CompanyName}",
                 entraUserId, request.Name);
 
             // Create tenant with admin user
             var tenant = await _tenantManagementService.CreateTenantAsync(request, entraUserId);
 
-            _logger.LogInformation("Tenant {TenantId} created successfully with admin {EntraUserId}", 
+            _logger.LogInformation("Tenant {TenantId} created successfully with admin {EntraUserId}",
                 tenant.Id, entraUserId);
 
             return CreatedAtAction(
@@ -91,37 +91,39 @@ public class RegistrationController : ControllerBase
     [HttpGet("check-domain/{domain}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-    public async Task<ActionResult<object>> CheckDomainAvailability(string domain)
+    public Task<ActionResult<object>> CheckDomainAvailability(string domain)
     {
         try
         {
             // Basic validation
             if (string.IsNullOrWhiteSpace(domain) || domain.Length < 3)
             {
-                return BadRequest(new { available = false, message = "Domain must be at least 3 characters" });
+                return Task.FromResult<ActionResult<object>>(BadRequest(new { available = false, message = "Domain must be at least 3 characters" }));
             }
 
             // Check format
             if (!System.Text.RegularExpressions.Regex.IsMatch(domain, @"^[a-z0-9-]+$"))
             {
-                return BadRequest(new { available = false, message = "Domain can only contain lowercase letters, numbers, and hyphens" });
+                return Task.FromResult<ActionResult<object>>(BadRequest(new { available = false, message = "Domain can only contain lowercase letters, numbers, and hyphens" }));
             }
 
             // Check availability (this would query the database)
             // TODO: Implement actual check against DirectoryDbContext
             var isAvailable = true; // Placeholder
 
-            return Ok(new 
-            { 
+            return Task.FromResult<ActionResult<object>>(Ok(new
+            {
                 available = isAvailable,
                 domain = domain,
                 message = isAvailable ? "Domain is available" : "Domain is already taken"
-            });
+            }));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error checking domain availability for {Domain}", domain);
-            return StatusCode(500, "An error occurred while checking domain availability");
+            // Sanitize domain for logging to prevent log forging
+            var safeDomain = System.Text.RegularExpressions.Regex.Replace(domain ?? "", @"[^\w-]", "");
+            _logger.LogError(ex, "Error checking domain availability for {Domain}", safeDomain);
+            return Task.FromResult<ActionResult<object>>(StatusCode(500, "An error occurred while checking domain availability"));
         }
     }
 }
