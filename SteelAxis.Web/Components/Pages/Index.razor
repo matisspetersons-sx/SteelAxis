@@ -1,0 +1,274 @@
+@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using SteelAxis.Web.Services
+@inject IProfileHttpService ProfileService
+@inject NavigationManager Navigation
+@attribute [AllowAnonymous]
+
+<PageTitle>SteelAxis - Steel Fabrication Management</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        @* Authenticated User View *@
+        <MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
+            <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">
+                Welcome back, @context.User.Identity?.Name
+            </MudText>
+            <MudText Typo="Typo.h6" Align="Align.Center" Color="Color.Default" Class="mb-8">
+                @if (_currentUser != null)
+                {
+                    <text>@_currentUser.TenantName - @_currentUser.Role</text>
+                }
+            </MudText>
+
+            <MudGrid>
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="2" Class="pa-4" Style="height: 100%;">
+                        <MudCardContent>
+                            <MudIcon Icon="@Icons.Material.Filled.Folder" Color="Color.Primary" Size="Size.Large" />
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Class="mt-2">Projects</MudText>
+                            <MudText Typo="Typo.body2" Class="mt-2">
+                                Manage your steel fabrication projects, tasks, and deliverables
+                            </MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/projects">View Projects</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="2" Class="pa-4" Style="height: 100%;">
+                        <MudCardContent>
+                            <MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Primary" Size="Size.Large" />
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Class="mt-2">Team</MudText>
+                            <MudText Typo="Typo.body2" Class="mt-2">
+                                Manage users, roles, and team invitations
+                            </MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/users">Manage Users</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="2" Class="pa-4" Style="height: 100%;">
+                        <MudCardContent>
+                            <MudIcon Icon="@Icons.Material.Filled.Settings" Color="Color.Primary" Size="Size.Large" />
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Class="mt-2">Settings</MudText>
+                            <MudText Typo="Typo.body2" Class="mt-2">
+                                Configure tenant settings, subscription, and features
+                            </MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/settings/tenant">View Settings</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+
+            @if (_loading)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mt-4" />
+            }
+        </MudContainer>
+    </Authorized>
+    <NotAuthorized>
+        @* Anonymous User View *@
+        <MudContainer MaxWidth="MaxWidth.Large" Class="mt-16">
+            <MudText Typo="Typo.h2" Align="Align.Center" GutterBottom="true" Style="font-weight: 600;">
+                SteelAxis
+            </MudText>
+            <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Default" Class="mb-8">
+                Modern Steel Fabrication Management
+            </MudText>
+            <MudText Typo="Typo.body1" Align="Align.Center" Class="mb-12" Style="max-width: 600px; margin: 0 auto;">
+                Streamline your steel fabrication operations with EN 1090 compliance, 
+                multi-tenant architecture, and comprehensive project management tools.
+            </MudText>
+
+            <MudStack Row="true" Justify="Justify.Center" Spacing="4" Class="mb-16">
+                <MudButton Variant="Variant.Filled" 
+                           Color="Color.Primary" 
+                           Size="Size.Large"
+                           Href="/register">
+                    Start Free Trial
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" 
+                           Color="Color.Primary" 
+                           Size="Size.Large"
+                           OnClick="SignIn">
+                    Sign In
+                </MudButton>
+            </MudStack>
+
+            <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true" Class="mt-16 mb-8">
+                Key Features
+            </MudText>
+
+            <MudGrid>
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="0" Class="pa-4 text-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Verified" Color="Color.Primary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="mt-2">EN 1090 Compliance</MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2">
+                            Material traceability, quality control, and certification management
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="0" Class="pa-4 text-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Business" Color="Color.Primary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="mt-2">Multi-Tenant</MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2">
+                            Complete data isolation with GDPR compliance and secure authentication
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="0" Class="pa-4 text-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Dashboard" Color="Color.Primary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="mt-2">Project Management</MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2">
+                            Task dependencies, resource planning, and critical path analysis
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="0" Class="pa-4 text-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Inventory" Color="Color.Primary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="mt-2">Inventory Tracking</MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2">
+                            Steel profiles, sheets, remnants, and material optimization
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="0" Class="pa-4 text-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Group" Color="Color.Primary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="mt-2">Team Collaboration</MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2">
+                            User management, role-based access, and team invitations
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="0" Class="pa-4 text-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Share" Color="Color.Primary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6" Class="mt-2">Customer Portal</MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2">
+                            Secure document sharing with external customers
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+
+            <MudDivider Class="my-16" />
+
+            <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true" Class="mb-8">
+                Subscription Plans
+            </MudText>
+
+            <MudGrid>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudCard Elevation="2">
+                        <MudCardContent Class="text-center">
+                            <MudText Typo="Typo.h6" Color="Color.Primary">Free</MudText>
+                            <MudText Typo="Typo.h4" Class="my-4">$0</MudText>
+                            <MudText Typo="Typo.body2">Per month</MudText>
+                            <MudDivider Class="my-4" />
+                            <MudText Typo="Typo.body2">✓ 1 User</MudText>
+                            <MudText Typo="Typo.body2">✓ 5 Projects</MudText>
+                            <MudText Typo="Typo.body2">✓ Basic Features</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="3">
+                    <MudCard Elevation="2">
+                        <MudCardContent Class="text-center">
+                            <MudText Typo="Typo.h6" Color="Color.Primary">Basic</MudText>
+                            <MudText Typo="Typo.h4" Class="my-4">$29</MudText>
+                            <MudText Typo="Typo.body2">Per month</MudText>
+                            <MudDivider Class="my-4" />
+                            <MudText Typo="Typo.body2">✓ 5 Users</MudText>
+                            <MudText Typo="Typo.body2">✓ 20 Projects</MudText>
+                            <MudText Typo="Typo.body2">✓ All Basic Features</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="3">
+                    <MudCard Elevation="4" Style="border: 2px solid var(--mud-palette-primary);">
+                        <MudCardContent Class="text-center">
+                            <MudChip T="string" Color="Color.Primary" Size="Size.Small">POPULAR</MudChip>
+                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mt-2">Professional</MudText>
+                            <MudText Typo="Typo.h4" Class="my-4">$99</MudText>
+                            <MudText Typo="Typo.body2">Per month</MudText>
+                            <MudDivider Class="my-4" />
+                            <MudText Typo="Typo.body2">✓ 20 Users</MudText>
+                            <MudText Typo="Typo.body2">✓ Unlimited Projects</MudText>
+                            <MudText Typo="Typo.body2">✓ EN 1090 Features</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="3">
+                    <MudCard Elevation="2">
+                        <MudCardContent Class="text-center">
+                            <MudText Typo="Typo.h6" Color="Color.Primary">Enterprise</MudText>
+                            <MudText Typo="Typo.h4" Class="my-4">Custom</MudText>
+                            <MudText Typo="Typo.body2">Contact us</MudText>
+                            <MudDivider Class="my-4" />
+                            <MudText Typo="Typo.body2">✓ Unlimited Users</MudText>
+                            <MudText Typo="Typo.body2">✓ Dedicated Support</MudText>
+                            <MudText Typo="Typo.body2">✓ Custom Features</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+
+            <MudStack Row="true" Justify="Justify.Center" Class="mt-12">
+                <MudButton Variant="Variant.Filled" 
+                           Color="Color.Primary" 
+                           Size="Size.Large"
+                           Href="/register">
+                    Get Started Now
+                </MudButton>
+            </MudStack>
+        </MudContainer>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private bool _loading = true;
+    private SteelAxis.Shared.DTOs.CurrentUserDto? _currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _currentUser = await ProfileService.GetCurrentUserAsync();
+        }
+        catch (Exception)
+        {
+            // User not authenticated or error occurred
+            _currentUser = null;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void SignIn()
+    {
+        Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", forceLoad: true);
+    }
+}

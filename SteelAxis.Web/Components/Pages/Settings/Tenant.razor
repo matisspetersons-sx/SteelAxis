@@ -1,0 +1,251 @@
+@page "/settings/tenant"
+@using SteelAxis.Shared.DTOs
+@using SteelAxis.Web.Services
+@attribute [Authorize(Roles = "Admin")]
+@inject ITenantHttpService TenantService
+@inject IFeatureFlagHttpService FeatureService
+@inject ISnackbar Snackbar
+
+<PageTitle>Tenant Settings - SteelAxis</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudText Typo="Typo.h4" GutterBottom="true">Tenant Settings</MudText>
+    <MudText Typo="Typo.body1" Class="mb-6">Manage your organization's settings and subscription</MudText>
+
+    @if (_loading)
+    {
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+    }
+
+    @if (_tenant != null)
+    {
+        <MudGrid>
+            <MudItem xs="12" md="8">
+                <MudPaper Elevation="2" Class="pa-4 mb-4">
+                    <MudText Typo="Typo.h6" Class="mb-4">Organization Information</MudText>
+
+                    <EditForm Model="@_updateModel" OnValidSubmit="UpdateTenant">
+                        <DataAnnotationsValidator />
+
+                        <MudTextField @bind-Value="_updateModel.Name"
+                                      Label="Company Name"
+                                      Variant="Variant.Outlined"
+                                      For="@(() => _updateModel.Name)"
+                                      Class="mb-4" />
+
+                        <MudTextField Value="@_tenant.Domain"
+                                      Label="Domain"
+                                      Variant="Variant.Outlined"
+                                      Disabled="true"
+                                      HelperText="Domain cannot be changed"
+                                      Class="mb-4" />
+
+                        <MudSelect @bind-Value="_updateModel.SubscriptionTier"
+                                   Label="Subscription Plan"
+                                   Variant="Variant.Outlined"
+                                   For="@(() => _updateModel.SubscriptionTier)"
+                                   Class="mb-4">
+                            <MudSelectItem Value="@("Free")">Free - 1 User, 5 Projects</MudSelectItem>
+                            <MudSelectItem Value="@("Basic")">Basic - 5 Users, 20 Projects - $29/month</MudSelectItem>
+                            <MudSelectItem Value="@("Professional")">Professional - 20 Users, Unlimited - $99/month</MudSelectItem>
+                            <MudSelectItem Value="@("Enterprise")">Enterprise - Custom Pricing</MudSelectItem>
+                        </MudSelect>
+
+                        <MudStack Row="true" Spacing="2">
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Disabled="_saving">
+                                @if (_saving)
+                                {
+                                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                                }
+                                Save Changes
+                            </MudButton>
+                            <MudButton Variant="Variant.Text" OnClick="ResetForm">Cancel</MudButton>
+                        </MudStack>
+                    </EditForm>
+                </MudPaper>
+
+                <MudPaper Elevation="2" Class="pa-4">
+                    <MudText Typo="Typo.h6" Class="mb-4">Feature Flags</MudText>
+
+                    @if (_tenant != null && _tenant.Features != null && _tenant.Features.Any())
+                    {
+                        <MudList T="string">
+                            @foreach (var feature in _tenant.Features)
+                            {
+                                <MudListItem T="string">
+                                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                        <div>
+                                            <MudText Typo="Typo.subtitle1">@feature.Key</MudText>
+                                        </div>
+                                        <MudChip T="string" Size="Size.Medium" 
+                                                 Color="@(feature.Value ? Color.Success : Color.Default)">
+                                            @(feature.Value ? "Enabled" : "Disabled")
+                                        </MudChip>
+                                    </MudStack>
+                                </MudListItem>
+                                <MudDivider />
+                            }
+                        </MudList>
+                    }
+                    else
+                    {
+                        <MudAlert Severity="Severity.Info">
+                            No features available for your subscription tier.
+                        </MudAlert>
+                    }
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <MudPaper Elevation="2" Class="pa-4 mb-4">
+                    <MudText Typo="Typo.h6" Class="mb-4">Account Status</MudText>
+
+                    <MudStack Spacing="3">
+                        <div>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Status</MudText>
+                            <MudChip T="string" Color="@(_tenant.IsActive ? Color.Success : Color.Error)">
+                                @(_tenant.IsActive ? "Active" : "Inactive")
+                            </MudChip>
+                        </div>
+
+                        <div>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Current Plan</MudText>
+                            <MudText Typo="Typo.subtitle1">@_tenant.SubscriptionTier</MudText>
+                        </div>
+
+                        @if (_tenant.TrialEndsAt.HasValue)
+                        {
+                            <div>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">Trial Ends</MudText>
+                                <MudText Typo="Typo.subtitle1">
+                                    @_tenant.TrialEndsAt.Value.ToString("MMMM dd, yyyy")
+                                </MudText>
+                            </div>
+                        }
+
+                        <div>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Tenant ID</MudText>
+                            <MudText Typo="Typo.subtitle1" Style="font-family: monospace; font-size: 0.8rem;">
+                                @_tenant.Id.ToString()
+                            </MudText>
+                        </div>
+                    </MudStack>
+                </MudPaper>
+
+                <MudPaper Elevation="2" Class="pa-4">
+                    <MudText Typo="Typo.h6" Class="mb-4">Quick Actions</MudText>
+
+                    <MudStack Spacing="2">
+                        <MudButton Variant="Variant.Outlined" 
+                                   Color="Color.Primary" 
+                                   FullWidth="true"
+                                   Href="/users">
+                            Manage Users
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" 
+                                   Color="Color.Primary" 
+                                   FullWidth="true"
+                                   Href="/invitations">
+                            View Invitations
+                        </MudButton>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    }
+</MudContainer>
+
+@code {
+    private TenantWithFeaturesDto? _tenant;
+    private TenantUpdateModel _updateModel = new();
+    private bool _loading = true;
+    private bool _saving = false;
+
+    // Mutable model for two-way binding
+    private class TenantUpdateModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string SubscriptionTier { get; set; } = string.Empty;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTenantData();
+    }
+
+    private async Task LoadTenantData()
+    {
+        _loading = true;
+        try
+        {
+            _tenant = await TenantService.GetCurrentTenantWithFeaturesAsync();
+            
+            if (_tenant != null)
+            {
+                _updateModel = new TenantUpdateModel
+                {
+                    Name = _tenant.Name,
+                    SubscriptionTier = _tenant.SubscriptionTier
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading tenant data: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task UpdateTenant()
+    {
+        if (_tenant == null) return;
+
+        _saving = true;
+        try
+        {
+            var request = new UpdateTenantRequest
+            {
+                Name = _updateModel.Name,
+                SubscriptionTier = _updateModel.SubscriptionTier
+            };
+
+            var result = await TenantService.UpdateTenantAsync(_tenant.Id, request);
+            
+            if (result != null)
+            {
+                Snackbar.Add("Settings updated successfully", Severity.Success);
+                await LoadTenantData();
+            }
+            else
+            {
+                Snackbar.Add("Failed to update settings", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error updating settings: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+
+    private void ResetForm()
+    {
+        if (_tenant != null)
+        {
+            _updateModel = new TenantUpdateModel
+            {
+                Name = _tenant.Name,
+                SubscriptionTier = _tenant.SubscriptionTier
+            };
+        }
+    }
+}

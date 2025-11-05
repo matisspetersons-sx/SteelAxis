@@ -1,0 +1,52 @@
+@*
+    Reusable component for role-based authorization in UI
+    Usage: 
+    <AuthorizeRoleView Roles="Admin,Manager">
+        <Authorized>
+            Your content here
+        </Authorized>
+    </AuthorizeRoleView>
+*@
+
+@if (!string.IsNullOrEmpty(Roles))
+{
+    <AuthorizeView Roles="@Roles">
+        <Authorized>
+            @Authorized
+        </Authorized>
+        <NotAuthorized>
+            @if (ShowNotAuthorized)
+            {
+                <MudAlert Severity="Severity.Warning">
+                    @NotAuthorizedMessage
+                </MudAlert>
+            }
+        </NotAuthorized>
+    </AuthorizeView>
+}
+
+@code {
+    /// <summary>
+    /// Comma-separated list of roles that are authorized to view the content
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Roles { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Content to display when user is authorized
+    /// </summary>
+    [Parameter]
+    public RenderFragment? Authorized { get; set; }
+
+    /// <summary>
+    /// Whether to show a message when user is not authorized (default: false)
+    /// </summary>
+    [Parameter]
+    public bool ShowNotAuthorized { get; set; } = false;
+
+    /// <summary>
+    /// Message to display when user is not authorized
+    /// </summary>
+    [Parameter]
+    public string NotAuthorizedMessage { get; set; } = "You do not have permission to view this content.";
+}

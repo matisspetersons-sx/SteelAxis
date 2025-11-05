@@ -1,0 +1,147 @@
+@using SteelAxis.Shared.DTOs
+@using SteelAxis.Web.Services
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-4">Edit User</MudText>
+
+        @if (_loading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+        }
+
+        <EditForm Model="@_model" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+
+            <MudTextField @bind-Value="_model.FirstName"
+                          Label="First Name"
+                          Variant="Variant.Outlined"
+                          For="@(() => _model.FirstName)"
+                          Class="mb-4" />
+
+            <MudTextField @bind-Value="_model.LastName"
+                          Label="Last Name"
+                          Variant="Variant.Outlined"
+                          For="@(() => _model.LastName)"
+                          Class="mb-4" />
+
+            <MudSelect @bind-Value="_model.Role"
+                       Label="Role"
+                       Variant="Variant.Outlined"
+                       For="@(() => _model.Role)"
+                       Class="mb-4">
+                <MudSelectItem Value="@("User")">User - Basic access</MudSelectItem>
+                <MudSelectItem Value="@("Manager")">Manager - Can manage users</MudSelectItem>
+                <MudSelectItem Value="@("Admin")">Admin - Full access</MudSelectItem>
+            </MudSelect>
+
+            <MudCheckBox @bind-Value="_model.IsActive"
+                         Label="Active"
+                         Color="Color.Primary"
+                         Class="mb-4" />
+
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-2">@_errorMessage</MudAlert>
+            }
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Variant="Variant.Text">Cancel</MudButton>
+        <MudButton OnClick="HandleSubmit" 
+                   Variant="Variant.Filled" 
+                   Color="Color.Primary"
+                   Disabled="_loading">
+            @if (_loading)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+            }
+            Save Changes
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private dynamic MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public UserProfileDto User { get; set; } = null!;
+
+    [Inject]
+    private IUserHttpService UserService { get; set; } = null!;
+
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = null!;
+
+    private EditUserModel _model = new();
+    private bool _loading = false;
+    private string? _errorMessage;
+
+    // Mutable model for two-way binding
+    private class EditUserModel
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Role { get; set; }
+        public bool IsActive { get; set; }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (User != null)
+        {
+            _model = new EditUserModel
+            {
+                FirstName = User.FirstName,
+                LastName = User.LastName,
+                Role = User.Role,
+                IsActive = User.IsActive
+            };
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        _loading = true;
+        _errorMessage = null;
+
+        try
+        {
+            var request = new UpdateUserRequest
+            {
+                FirstName = _model.FirstName,
+                LastName = _model.LastName,
+                Role = _model.Role,
+                IsActive = _model.IsActive
+            };
+
+            var result = await UserService.UpdateUserAsync(User.Id, request);
+
+            if (result != null)
+            {
+                Snackbar.Add("User updated successfully", Severity.Success);
+                MudDialog.Close(DialogResult.Ok(result));
+            }
+            else
+            {
+                _errorMessage = "Failed to update user. Please try again.";
+                Snackbar.Add("Failed to update user", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Error: {ex.Message}";
+            Snackbar.Add("An error occurred", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}
