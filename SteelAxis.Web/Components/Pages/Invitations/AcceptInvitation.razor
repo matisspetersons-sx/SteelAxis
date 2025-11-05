@@ -1,0 +1,150 @@
+@page "/accept-invitation/{Token}"
+@using SteelAxis.Shared.DTOs
+@using SteelAxis.Web.Services
+@attribute [AllowAnonymous]
+@inject IInvitationHttpService InvitationService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<PageTitle>Accept Invitation - SteelAxis</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
+    <MudPaper Elevation="4" Class="pa-8">
+        <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">
+            Accept Invitation
+        </MudText>
+
+        @if (_loading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-4" />
+            <MudText Typo="Typo.body1" Align="Align.Center">Loading invitation details...</MudText>
+        }
+        else if (_invitation != null && _invitation.IsValid)
+        {
+            <MudAlert Severity="Severity.Info" Class="mb-4">
+                You've been invited to join <strong>@_invitation.TenantName</strong>
+            </MudAlert>
+
+            <MudCard Elevation="0" Class="mb-4">
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" Class="mb-2">Invitation Details</MudText>
+                    <MudDivider Class="mb-3" />
+                    
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        <strong>Email:</strong> @_invitation.Email
+                    </MudText>
+                    @if (!string.IsNullOrEmpty(_invitation.FirstName))
+                    {
+                        <MudText Typo="Typo.body2" Class="mb-2">
+                            <strong>Name:</strong> @_invitation.FirstName @_invitation.LastName
+                        </MudText>
+                    }
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        <strong>Role:</strong> @_invitation.Role
+                    </MudText>
+                    <MudText Typo="Typo.body2" Class="mb-2">
+                        <strong>Invited by:</strong> @_invitation.InvitedByName
+                    </MudText>
+                    <MudText Typo="Typo.body2">
+                        <strong>Expires:</strong> @_invitation.ExpiresAt.ToString("MMMM dd, yyyy")
+                    </MudText>
+                </MudCardContent>
+            </MudCard>
+
+            <MudAlert Severity="Severity.Warning" Class="mb-4">
+                You must sign in with Microsoft to accept this invitation. 
+                Please ensure you use the email address: <strong>@_invitation.Email</strong>
+            </MudAlert>
+
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Primary" 
+                       FullWidth="true"
+                       Size="Size.Large"
+                       OnClick="HandleAcceptInvitation"
+                       Disabled="_processing">
+                @if (_processing)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                    <text>Processing...</text>
+                }
+                else
+                {
+                    <text>Sign In & Accept Invitation</text>
+                }
+            </MudButton>
+        }
+        else if (_invitation != null && _invitation.IsExpired)
+        {
+            <MudAlert Severity="Severity.Error" Class="mb-4">
+                This invitation has expired. Please contact your administrator for a new invitation.
+            </MudAlert>
+        }
+        else if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <MudAlert Severity="Severity.Error" Class="mb-4">
+                @_errorMessage
+            </MudAlert>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Warning" Class="mb-4">
+                Invalid invitation token. Please check your invitation link.
+            </MudAlert>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string Token { get; set; } = string.Empty;
+
+    private InvitationDto? _invitation;
+    private bool _loading = true;
+    private bool _processing = false;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Token))
+        {
+            await LoadInvitation();
+        }
+        else
+        {
+            _loading = false;
+            _errorMessage = "No invitation token provided.";
+        }
+    }
+
+    private async Task LoadInvitation()
+    {
+        _loading = true;
+        try
+        {
+            _invitation = await InvitationService.GetInvitationByTokenAsync(Token);
+            
+            if (_invitation == null)
+            {
+                _errorMessage = "Invitation not found or has been revoked.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Error loading invitation: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void HandleAcceptInvitation()
+    {
+        _processing = true;
+        
+        // Redirect to Microsoft sign-in with return URL to complete acceptance
+        // The acceptance will be completed in the authentication callback
+        var returnUrl = $"/accept-invitation/{Token}/complete";
+        Navigation.NavigateTo($"/MicrosoftIdentity/Account/SignIn?returnUrl={Uri.EscapeDataString(returnUrl)}", forceLoad: true);
+    }
+}

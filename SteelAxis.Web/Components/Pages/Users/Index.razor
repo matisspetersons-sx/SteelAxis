@@ -1,0 +1,199 @@
+@page "/users"
+@using SteelAxis.Shared.DTOs
+@using SteelAxis.Web.Services
+@using SteelAxis.Web.Components.Dialogs
+@attribute [Authorize(Roles = "Admin,Manager")]
+@inject IUserHttpService UserService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>Users - SteelAxis</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudText Typo="Typo.h4" GutterBottom="true">Team Members</MudText>
+    <MudText Typo="Typo.body1" Class="mb-6">Manage users and invitations for your organization</MudText>
+
+    <MudPaper Elevation="2" Class="pa-4">
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudText Typo="Typo.h6">Active Users</MudText>
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Primary" 
+                       StartIcon="@Icons.Material.Filled.PersonAdd"
+                       OnClick="OpenInviteDialog">
+                Invite User
+            </MudButton>
+        </MudStack>
+
+        @if (_loading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+        }
+
+        <MudDataGrid T="UserProfileDto" 
+                     Items="@_users" 
+                     Filterable="true" 
+                     SortMode="SortMode.Multiple"
+                     Hover="true"
+                     Dense="true">
+            <Columns>
+                <PropertyColumn Property="x => x.Email" Title="Email" />
+                <PropertyColumn Property="x => x.FirstName" Title="First Name" />
+                <PropertyColumn Property="x => x.LastName" Title="Last Name" />
+                <PropertyColumn Property="x => x.Role" Title="Role">
+                    <CellTemplate>
+                        <MudChip Size="Size.Small" 
+                                 Color="@GetRoleColor(context.Item.Role)">
+                            @context.Item.Role
+                        </MudChip>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.IsActive" Title="Status">
+                    <CellTemplate>
+                        @if (context.Item.IsActive)
+                        {
+                            <MudChip Size="Size.Small" Color="Color.Success">Active</MudChip>
+                        }
+                        else
+                        {
+                            <MudChip Size="Size.Small" Color="Color.Default">Inactive</MudChip>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.CreatedAt" Title="Joined" Format="yyyy-MM-dd" />
+                <TemplateColumn Title="Actions" Sortable="false">
+                    <CellTemplate>
+                        <MudTooltip Text="Edit user">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                                           Size="Size.Small" 
+                                           Color="Color.Primary"
+                                           aria-label="Edit user"
+                                           OnClick="@(() => OpenEditDialog(context.Item))" />
+                        </MudTooltip>
+                        @if (context.Item.IsActive)
+                        {
+                            <MudTooltip Text="Deactivate user">
+                                <MudIconButton Icon="@Icons.Material.Filled.Block" 
+                                               Size="Size.Small" 
+                                               Color="Color.Warning"
+                                               aria-label="Deactivate user"
+                                               OnClick="@(() => DeactivateUser(context.Item))" />
+                            </MudTooltip>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="UserProfileDto" />
+            </PagerContent>
+        </MudDataGrid>
+
+        @if (!_loading && _users.Count == 0)
+        {
+            <MudAlert Severity="Severity.Info" Class="mt-4">
+                No users found. Click "Invite User" to add team members.
+            </MudAlert>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private List<UserProfileDto> _users = new();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        _loading = true;
+        try
+        {
+            _users = await UserService.GetUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading users: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task OpenInviteDialog()
+    {
+        var dialog = await DialogService.ShowAsync<InviteUserDialog>("Invite New User", 
+            new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        
+        var result = await dialog.Result;
+
+        if (result is null || result.Canceled)
+        {
+            return;
+        }
+
+        await LoadUsers();
+    }
+
+    private async Task OpenEditDialog(UserProfileDto user)
+    {
+        var parameters = new DialogParameters<EditUserDialog>();
+        parameters.Add(x => x.User, user);
+
+        var dialog = await DialogService.ShowAsync<EditUserDialog>("Edit User", 
+            parameters,
+            new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        
+        var result = await dialog.Result;
+
+        if (result is null || result.Canceled)
+        {
+            return;
+        }
+
+        await LoadUsers();
+    }
+
+    private async Task DeactivateUser(UserProfileDto? user)
+    {
+        if (user is null)
+        {
+            Snackbar.Add("Unable to deactivate user: user details were not provided.", Severity.Error);
+            return;
+        }
+
+        var emailLabel = string.IsNullOrWhiteSpace(user.Email) ? "this user" : user.Email;
+
+        bool? confirmed = await DialogService.ShowMessageBox(
+            "Deactivate User",
+            $"Are you sure you want to deactivate {emailLabel}?",
+            yesText: "Deactivate", cancelText: "Cancel");
+
+        if (confirmed == true)
+        {
+            var success = await UserService.DeactivateUserAsync(user.Id);
+            if (success)
+            {
+                Snackbar.Add($"User {emailLabel} deactivated", Severity.Success);
+                await LoadUsers();
+            }
+            else
+            {
+                Snackbar.Add("Failed to deactivate user", Severity.Error);
+            }
+        }
+    }
+
+    private Color GetRoleColor(string role)
+    {
+        return role switch
+        {
+            "Admin" => Color.Error,
+            "Manager" => Color.Warning,
+            "User" => Color.Info,
+            _ => Color.Default
+        };
+    }
+}

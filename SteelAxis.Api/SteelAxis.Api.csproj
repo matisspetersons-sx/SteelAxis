@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SteelAxis.Data\SteelAxis.Data.csproj" />
+    <ProjectReference Include="..\SteelAxis.Directory\SteelAxis.Directory.csproj" />
     <ProjectReference Include="..\SteelAxis.Services\SteelAxis.Services.csproj" />
   </ItemGroup>
 

@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SteelAxis.Data\SteelAxis.Data.csproj" />
     <ProjectReference Include="..\SteelAxis.Services\SteelAxis.Services.csproj" />
+    <ProjectReference Include="..\SteelAxis.Shared\SteelAxis.Shared.csproj" />
   </ItemGroup>
 
 </Project>

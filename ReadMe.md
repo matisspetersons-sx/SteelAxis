@@ -159,7 +159,8 @@ SteelAxis/
 │   ├── authentication/              # Authentication setup guides
 │   ├── azure-infrastructure/        # Azure deployment guides
 │   ├── en-1090-compliance/          # EN 1090 specifications
-│   └── mudblazor/                   # MudBlazor component reference
+│   ├── mudblazor/                   # MudBlazor component reference
+│   └── runtime-auth-state/          # Runtime authentication cascade fix documentation
 ├── SteelAxis.Api/          # ASP.NET Core Web API (controllers, endpoints)
 ├── SteelAxis.Auth/         # Authentication models (ApplicationUser)
 ├── SteelAxis.Data/         # EF Core DbContext (tenant databases)

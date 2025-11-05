@@ -1,0 +1,165 @@
+@page "/invitations"
+@using SteelAxis.Shared.DTOs
+@using SteelAxis.Web.Services
+@attribute [Authorize(Roles = "Admin,Manager")]
+@inject IInvitationHttpService InvitationService
+@inject ISnackbar Snackbar
+
+<PageTitle>Invitations - SteelAxis</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudText Typo="Typo.h4" GutterBottom="true">User Invitations</MudText>
+    <MudText Typo="Typo.body1" Class="mb-6">Manage pending and completed user invitations</MudText>
+
+    <MudPaper Elevation="2" Class="pa-4">
+        @if (_loading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+        }
+
+        <MudDataGrid T="InvitationDto" 
+                     Items="@_invitations" 
+                     Filterable="true" 
+                     SortMode="SortMode.Multiple"
+                     Hover="true"
+                     Dense="true">
+            <Columns>
+                <PropertyColumn Property="x => x.Email" Title="Email" />
+                <PropertyColumn Property="x => x.FirstName" Title="First Name" />
+                <PropertyColumn Property="x => x.LastName" Title="Last Name" />
+                <PropertyColumn Property="x => x.Role" Title="Role">
+                    <CellTemplate>
+                        <MudChip Size="Size.Small" Color="Color.Info">
+                            @context.Item.Role
+                        </MudChip>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.Status" Title="Status">
+                    <CellTemplate>
+                        @{
+                            var (color, text) = GetStatusDisplay(context.Item);
+                        }
+                        <MudChip Size="Size.Small" Color="@color">@text</MudChip>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.InvitedByName" Title="Invited By" />
+                <PropertyColumn Property="x => x.CreatedAt" Title="Sent" Format="yyyy-MM-dd HH:mm" />
+                <PropertyColumn Property="x => x.ExpiresAt" Title="Expires" Format="yyyy-MM-dd">
+                    <CellTemplate>
+                        @if (context.Item.IsExpired)
+                        {
+                            <MudText Typo="Typo.body2" Color="Color.Error">Expired</MudText>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2">@context.Item.ExpiresAt.ToString("yyyy-MM-dd")</MudText>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+                <TemplateColumn Title="Actions" Sortable="false">
+                    <CellTemplate>
+                        @if (context.Item.Status == "Pending" && context.Item.IsValid)
+                        {
+                            <MudTooltip Text="Resend invitation">
+                                <MudIconButton Icon="@Icons.Material.Filled.Send" 
+                                               Size="Size.Small" 
+                                               Color="Color.Info"
+                                               aria-label="Resend invitation"
+                                               OnClick="@(() => ResendInvitation(context.Item))" />
+                            </MudTooltip>
+                            <MudTooltip Text="Revoke invitation">
+                                <MudIconButton Icon="@Icons.Material.Filled.Cancel" 
+                                               Size="Size.Small" 
+                                               Color="Color.Error"
+                                               aria-label="Revoke invitation"
+                                               OnClick="@(() => RevokeInvitation(context.Item))" />
+                            </MudTooltip>
+                        }
+                        else if (context.Item.Status == "Accepted")
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="InvitationDto" />
+            </PagerContent>
+        </MudDataGrid>
+
+        @if (!_loading && _invitations.Count == 0)
+        {
+            <MudAlert Severity="Severity.Info" Class="mt-4">
+                No invitations found. Invite users from the Team Members page.
+            </MudAlert>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private List<InvitationDto> _invitations = new();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadInvitations();
+    }
+
+    private async Task LoadInvitations()
+    {
+        _loading = true;
+        try
+        {
+            _invitations = await InvitationService.GetInvitationsAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading invitations: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task ResendInvitation(InvitationDto invitation)
+    {
+        var success = await InvitationService.ResendInvitationAsync(invitation.Id);
+        if (success)
+        {
+            Snackbar.Add($"Invitation resent to {invitation.Email}", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("Failed to resend invitation", Severity.Error);
+        }
+    }
+
+    private async Task RevokeInvitation(InvitationDto invitation)
+    {
+        var success = await InvitationService.RevokeInvitationAsync(invitation.Id);
+        if (success)
+        {
+            Snackbar.Add($"Invitation to {invitation.Email} has been revoked", Severity.Success);
+            await LoadInvitations();
+        }
+        else
+        {
+            Snackbar.Add("Failed to revoke invitation", Severity.Error);
+        }
+    }
+
+    private (Color color, string text) GetStatusDisplay(InvitationDto invitation)
+    {
+        if (invitation.IsExpired)
+            return (Color.Error, "Expired");
+        
+        return invitation.Status switch
+        {
+            "Pending" => (Color.Warning, "Pending"),
+            "Accepted" => (Color.Success, "Accepted"),
+            "Revoked" => (Color.Error, "Revoked"),
+            _ => (Color.Default, invitation.Status)
+        };
+    }
+}

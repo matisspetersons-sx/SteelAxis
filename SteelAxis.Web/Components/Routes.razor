@@ -1,6 +1,32 @@
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Routing
+@using SteelAxis.Web.Components
+@using SteelAxis.Web.Components.Layout
+
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
+        <AuthorizeRouteView RouteData="@routeData"
+                             DefaultLayout="@typeof(MainLayout)"
+                             Context="authContext">
+            <NotAuthorized>
+                @if (authContext.User.Identity?.IsAuthenticated != true)
+                {
+                    <RedirectToLogin />
+                }
+                else
+                {
+                    <p role="alert">You do not have permission to access this resource.</p>
+                }
+            </NotAuthorized>
+        </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
+    <NotFound>
+        <MainLayout>
+            <div class="m-4">
+                <h3>Sorry, we couldn't find that page.</h3>
+            </div>
+        </MainLayout>
+    </NotFound>
 </Router>

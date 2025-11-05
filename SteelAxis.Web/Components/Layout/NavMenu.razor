@@ -1,6 +1,31 @@
 <MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="/projects" Icon="@Icons.Material.Filled.Business">Projects</MudNavLink>
+    
+    <AuthorizeView Context="navAuth">
+        <Authorized>
+            <MudNavLink Href="/projects" Icon="@Icons.Material.Filled.Business">Projects</MudNavLink>
+            <MudNavLink Href="/inventory" Icon="@Icons.Material.Filled.Inventory">Inventory</MudNavLink>
+            <MudNavLink Href="/materials" Icon="@Icons.Material.Filled.Construction">Materials</MudNavLink>
+            
+            <MudDivider Class="my-2" />
+            
+            <!-- Admin and Manager Only -->
+            <AuthorizeView Roles="Admin,Manager" Context="teamAuth">
+                <MudNavGroup Title="Team" Icon="@Icons.Material.Filled.Group" Expanded="false">
+                    <MudNavLink Href="/users" Icon="@Icons.Material.Filled.People">Users</MudNavLink>
+                    <MudNavLink Href="/invitations" Icon="@Icons.Material.Filled.Email">Invitations</MudNavLink>
+                </MudNavGroup>
+            </AuthorizeView>
+            
+            <!-- Admin Only -->
+            <AuthorizeView Roles="Admin" Context="adminAuth">
+                <MudNavLink Href="/settings/tenant" Icon="@Icons.Material.Filled.Settings">Tenant Settings</MudNavLink>
+            </AuthorizeView>
+        </Authorized>
+        <NotAuthorized>
+            <MudNavLink Href="/register" Icon="@Icons.Material.Filled.AppRegistration">Register</MudNavLink>
+        </NotAuthorized>
+    </AuthorizeView>
 </MudNavMenu>
 
 @code {

@@ -1,0 +1,184 @@
+@page "/register"
+@using SteelAxis.Shared.DTOs
+@using SteelAxis.Web.Services
+@inject IRegistrationHttpService RegistrationService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@attribute [AllowAnonymous]
+
+<PageTitle>Register - SteelAxis</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
+    <MudPaper Elevation="4" Class="pa-8">
+        <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">
+            Start Your Free Trial
+        </MudText>
+        <MudText Typo="Typo.body2" Align="Align.Center" Class="mb-6">
+            Create your SteelAxis account and start managing your steel fabrication projects
+        </MudText>
+
+        @if (_loading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+        }
+
+        <EditForm Model="@_model" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+
+            <MudCard Elevation="0">
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" Class="mb-4">Company Information</MudText>
+
+                    <MudTextField @bind-Value="_model.CompanyName"
+                                  Label="Company Name"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  For="@(() => _model.CompanyName)"
+                                  Class="mb-4" />
+
+                    <MudTextField @bind-Value="_model.Domain"
+                                  Label="Company Domain"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  For="@(() => _model.Domain)"
+                                  HelperText="Used for unique identification (e.g., acmesteel)"
+                                  Class="mb-4" />
+
+                    <MudSelect @bind-Value="_model.SubscriptionTier"
+                               Label="Subscription Plan"
+                               Variant="Variant.Outlined"
+                               Required="true"
+                               For="@(() => _model.SubscriptionTier)"
+                               Class="mb-6">
+                        <MudSelectItem Value="@("Free")">Free - 1 User, 5 Projects</MudSelectItem>
+                        <MudSelectItem Value="@("Basic")">Basic - 5 Users, 20 Projects - $29/month</MudSelectItem>
+                        <MudSelectItem Value="@("Professional")">Professional - 20 Users, Unlimited Projects - $99/month</MudSelectItem>
+                        <MudSelectItem Value="@("Enterprise")">Enterprise - Custom (Contact Us)</MudSelectItem>
+                    </MudSelect>
+
+                    <MudDivider Class="my-4" />
+
+                    <MudText Typo="Typo.h6" Class="mb-4">Administrator Account</MudText>
+
+                    <MudTextField @bind-Value="_model.AdminEmail"
+                                  Label="Admin Email"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  InputType="InputType.Email"
+                                  For="@(() => _model.AdminEmail)"
+                                  HelperText="You will use this email to sign in"
+                                  Class="mb-4" />
+
+                    <MudTextField @bind-Value="_model.AdminFirstName"
+                                  Label="First Name"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => _model.AdminFirstName)"
+                                  Class="mb-4" />
+
+                    <MudTextField @bind-Value="_model.AdminLastName"
+                                  Label="Last Name"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => _model.AdminLastName)"
+                                  Class="mb-4" />
+                    @if (!string.IsNullOrEmpty(_errorMessage))
+                    {
+                        <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+                    }
+                </MudCardContent>
+
+                <MudCardActions Class="pa-4">
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               FullWidth="true"
+                               Size="Size.Large"
+                               Disabled="_loading">
+                        @if (_loading)
+                        {
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                            <text>Creating Account...</text>
+                        }
+                        else
+                        {
+                            <text>Create Account</text>
+                        }
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
+
+        <MudDivider Class="my-6" />
+
+        <MudText Typo="Typo.body2" Align="Align.Center">
+            Already have an account?
+            <MudLink Href="/MicrosoftIdentity/Account/SignIn" Color="Color.Primary">Sign In</MudLink>
+        </MudText>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private RegistrationModel _model = new()
+    {
+        SubscriptionTier = "Free"
+    };
+
+    private bool _loading = false;
+    private string? _errorMessage;
+
+    // Mutable model for two-way binding
+    private class RegistrationModel
+    {
+        public string CompanyName { get; set; } = string.Empty;
+        public string? Domain { get; set; }
+        public string SubscriptionTier { get; set; } = "Free";
+        public string AdminEmail { get; set; } = string.Empty;
+        public string? AdminFirstName { get; set; }
+        public string? AdminLastName { get; set; }
+    }
+
+    private async Task HandleSubmit()
+    {
+        _loading = true;
+        _errorMessage = null;
+
+        try
+        {
+            var request = new CreateTenantRequest
+            {
+                Name = _model.CompanyName,
+                Domain = _model.Domain,
+                SubscriptionTier = _model.SubscriptionTier,
+                AdminEmail = _model.AdminEmail,
+                AdminFirstName = _model.AdminFirstName,
+                AdminLastName = _model.AdminLastName
+            };
+
+            var result = await RegistrationService.RegisterTenantAsync(request);
+
+            if (result != null)
+            {
+                Snackbar.Add($"Account created successfully for {result.Name}!", Severity.Success);
+                
+                // Wait a moment for user to see success message
+                await Task.Delay(1500);
+                
+                // Redirect to Microsoft sign-in
+                Navigation.NavigateTo("/MicrosoftIdentity/Account/SignIn", forceLoad: true);
+            }
+            else
+            {
+                _errorMessage = "Failed to create account. Please try again or contact support.";
+                Snackbar.Add("Registration failed", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An error occurred: {ex.Message}";
+            Snackbar.Add("Registration failed", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

@@ -123,6 +123,14 @@ MudBlazor component usage guides and examples.
 - **[mudblazor/README.md](./mudblazor/README.md)** - Component library index
 - Component-specific guides: MudDataGrid, MudDialog, MudButton, MudTable, etc.
 
+### 🛠 Runtime Authentication State
+**Status:** ✅ Implemented fix
+
+Documentation covering the authentication cascade fix that unblocks MudBlazor providers and `AuthorizeView` usage.
+
+- **[runtime-auth-state/README.md](./runtime-auth-state/README.md)** - Feature overview and usage notes
+- Supporting files: PLAN, API-SPEC, DATABASE, IMPLEMENTATION
+
 ---
 
 ## 📝 Feature Documentation Template
